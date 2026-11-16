@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QuotePro – Mechanic Quote Calculator</title>
+<link rel="manifest" href="/quote-calculator/manifest.webmanifest">
+<meta name="theme-color" content="#0f1114">
+<link rel="apple-touch-icon" href="/quote-calculator/icon-180.png">
+<link rel="icon" href="/quote-calculator/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="QuotePro">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0f1114;--panel:#171a1f;--panel2:#1e2228;--line:#2a2f37;--text:#e8eaed;--muted:#9aa1ab;--accent:#ff7a1a;--accent2:#ffb27a;--ok:#3ecf8e}
@@ -104,6 +111,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}
    </div>
    <div style="margin-top:10px"><label>Terms printed on every quote</label>
    <textarea id="s_terms" rows="3">Quote valid for 14 days. Prices may change if additional problems are found during the repair. Customer will be contacted for approval before any extra work. Parts warranty per manufacturer; labour warranted for 90 days.</textarea></div>
+   <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn" id="s_save">Save &amp; start quoting →</button><span class="tip" style="margin:0">Changes save automatically on this device.</span></div>
   </div>
  </section>
 
@@ -371,7 +379,67 @@ $("reset").onclick=()=>{
  ["x_trip","x_disp","x_disc"].forEach(k=>$(k).value=0);
  resetArmed=false;$("reset").textContent="Start a new quote";drawJobs();calc();
 };
+$("s_save").onclick=()=>{calc();tab("build")};
 restore();drawJobs();calc();
+</script>
+
+<!-- First-run welcome -->
+<style>
+#welcome{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:16px}
+#welcome .box{background:#171a1f;border:1px solid #2a2f37;border-radius:16px;max-width:440px;width:100%;padding:24px}
+#welcome h2{font-family:"Barlow Condensed",sans-serif;font-size:26px;margin:0 0 4px;letter-spacing:.5px}
+#welcome p{color:#9aa1ab;margin:0 0 16px;font-size:14px}
+#welcome ol{list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:12px}
+#welcome li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px}
+#welcome li span{flex:none;width:28px;height:28px;border-radius:50%;background:#ff7a1a;color:#111;font-weight:800;display:grid;place-items:center}
+#welcome li b{display:block}
+#welcome .skip{display:block;margin:10px auto 0;background:none;border:0;color:#9aa1ab;font-size:13px;cursor:pointer;font-family:inherit}
+</style>
+<div id="welcome" role="dialog" aria-label="Welcome to QuotePro"><div class="box">
+ <h2>WELCOME TO QUOTEPRO 👋</h2>
+ <p>3 quick steps and you'll be sending professional quotes.</p>
+ <ol>
+  <li><span>1</span><div><b>Set your rates (once)</b>Your hourly rate, parts markup and tax. Every quote uses them automatically.</div></li>
+  <li><span>2</span><div><b>Add the jobs</b>Pick from 40 common repairs, then adjust the hours and parts cost for the exact car.</div></li>
+  <li><span>3</span><div><b>Send the quote</b>Copy it into a text or WhatsApp, or save it as a PDF.</div></li>
+ </ol>
+ <button class="btn" id="w-go" style="width:100%">Set my rates →</button>
+ <button class="skip" id="w-skip">Skip for now</button>
+ <p style="margin:14px 0 0;font-size:12px;text-align:center">Your rates and quotes are saved privately on this device.</p>
+</div></div>
+<script>
+(function(){
+ let seen=false;try{seen=!!localStorage.getItem('qp_onboarded')}catch(e){}
+ if(seen)return;
+ const w=document.getElementById('welcome');w.style.display='flex';
+ const done=()=>{w.style.display='none';try{localStorage.setItem('qp_onboarded','1')}catch(e){}};
+ document.getElementById('w-go').onclick=()=>{done();tab('settings');setTimeout(()=>document.getElementById('s_rate').focus(),100)};
+ document.getElementById('w-skip').onclick=done;
+})();
+</script>
+<!-- Add to Home Screen tip -->
+<style>
+#a2hs{position:fixed;left:12px;right:12px;bottom:12px;z-index:50;max-width:520px;margin:0 auto;background:#1e2228;border:1px solid #ff7a1a;border-radius:14px;padding:14px 40px 14px 14px;box-shadow:0 10px 30px rgba(0,0,0,.5);font-size:14px;color:#e8eaed;line-height:1.45;display:none}
+#a2hs b{color:#ffb27a}#a2hs .xx{position:absolute;top:6px;right:8px;background:none;border:0;color:#9aa1ab;font-size:22px;cursor:pointer}
+@media print{#a2hs{display:none!important}}
+</style>
+<div id="a2hs" role="dialog" aria-label="Add to home screen"><button class="xx" aria-label="Dismiss">×</button><div id="a2hs-t"></div></div>
+<script>
+(function(){
+ try{
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  const key='a2hs_'+location.pathname;
+  if(standalone||localStorage.getItem(key))return;
+  const ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua), android=/Android/.test(ua);
+  if(!ios&&!android)return;
+  const el=document.getElementById('a2hs');
+  document.getElementById('a2hs-t').innerHTML=ios
+   ?'<b>📲 Save this app to your phone:</b> tap the <b>Share</b> button (square with an arrow) in Safari, then <b>“Add to Home Screen”</b>.'
+   :'<b>📲 Save this app to your phone:</b> tap the <b>⋮ menu</b> in Chrome, then <b>“Add to Home screen”</b> or <b>“Install app”</b>.';
+  setTimeout(()=>el.style.display='block',4000);
+  el.querySelector('.xx').onclick=()=>{el.style.display='none';try{localStorage.setItem(key,'1')}catch(e){}};
+ }catch(e){}
+})();
 </script>
 </body>
 </html>

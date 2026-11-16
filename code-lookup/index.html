@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CodeCheck Pro – Check Engine Code Lookup</title>
+<link rel="manifest" href="/code-lookup/manifest.webmanifest">
+<meta name="theme-color" content="#0f1114">
+<link rel="apple-touch-icon" href="/code-lookup/icon-180.png">
+<link rel="icon" href="/code-lookup/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CodeCheck">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
 <style>
@@ -691,6 +698,30 @@ Object.keys(CAT).sort((a,b)=>PRIORITY.indexOf(a)-PRIORITY.indexOf(b)).forEach(c=
  chips.appendChild(b);
 });
 drawRecent();
+</script>
+<!-- Add to Home Screen tip -->
+<style>
+#a2hs{position:fixed;left:12px;right:12px;bottom:12px;z-index:50;max-width:520px;margin:0 auto;background:#1e2228;border:1px solid #ff7a1a;border-radius:14px;padding:14px 40px 14px 14px;box-shadow:0 10px 30px rgba(0,0,0,.5);font-size:14px;color:#e8eaed;line-height:1.45;display:none}
+#a2hs b{color:#ffb27a}#a2hs .xx{position:absolute;top:6px;right:8px;background:none;border:0;color:#9aa1ab;font-size:22px;cursor:pointer}
+@media print{#a2hs{display:none!important}}
+</style>
+<div id="a2hs" role="dialog" aria-label="Add to home screen"><button class="xx" aria-label="Dismiss">×</button><div id="a2hs-t"></div></div>
+<script>
+(function(){
+ try{
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  const key='a2hs_'+location.pathname;
+  if(standalone||localStorage.getItem(key))return;
+  const ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua), android=/Android/.test(ua);
+  if(!ios&&!android)return;
+  const el=document.getElementById('a2hs');
+  document.getElementById('a2hs-t').innerHTML=ios
+   ?'<b>📲 Save this app to your phone:</b> tap the <b>Share</b> button (square with an arrow) in Safari, then <b>“Add to Home Screen”</b>.'
+   :'<b>📲 Save this app to your phone:</b> tap the <b>⋮ menu</b> in Chrome, then <b>“Add to Home screen”</b> or <b>“Install app”</b>.';
+  setTimeout(()=>el.style.display='block',4000);
+  el.querySelector('.xx').onclick=()=>{el.style.display='none';try{localStorage.setItem(key,'1')}catch(e){}};
+ }catch(e){}
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,22 @@
+{
+ "name": "CodeCheck Pro \u2013 Check Engine Code Lookup",
+ "short_name": "CodeCheck",
+ "start_url": "/code-lookup/",
+ "scope": "/code-lookup/",
+ "display": "standalone",
+ "background_color": "#0f1114",
+ "theme_color": "#0f1114",
+ "icons": [
+  {
+   "src": "/code-lookup/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/code-lookup/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}
