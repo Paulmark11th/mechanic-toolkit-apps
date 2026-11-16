@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hybrid & EV Fundamentals – Mechanic Add-On Course</title>
+<link rel="manifest" href="/hybrid-ev/manifest.webmanifest">
+<meta name="theme-color" content="#0f1114">
+<link rel="apple-touch-icon" href="/hybrid-ev/icon-180.png">
+<link rel="icon" href="/hybrid-ev/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Hybrid & EV">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1114;--panel:#171a1f;--panel2:#1e2228;--line:#2a2f37;--text:#e8eaed;--muted:#9aa1ab;--accent:#2ee6a6;--accent2:#8ff5d2;--ok:#3ecf8e;--warn:#f5b941;--bad:#ff5a5a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--accent2)}
+.wrap{max-width:820px;margin:0 auto;padding:18px 16px 90px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:16px;cursor:pointer}
+.logo{width:44px;height:44px;border-radius:10px;background:var(--accent);display:grid;place-items:center;flex:none}
+h1.brand{font-family:"Barlow Condensed",sans-serif;font-size:26px;letter-spacing:.5px;margin:0;line-height:1;text-transform:uppercase}
+.sub{color:var(--muted);font-size:13px}
+.bar{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.hero{background:linear-gradient(135deg,var(--panel),#121418);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px}
+.hero h2{font-family:"Barlow Condensed",sans-serif;font-size:30px;line-height:1.1;margin:0 0 6px}
+.hero p{color:var(--muted);margin:0 0 16px}
+.prog{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px}
+.btn{background:var(--accent);color:#111;border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:15px;display:inline-block;text-decoration:none}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.mod{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.mod-h{padding:14px 16px;display:flex;gap:12px;align-items:center}
+.num{flex:none;width:34px;height:34px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-weight:700;color:var(--accent2);font-size:14px}
+.num.done{background:var(--ok);color:#111;border-color:var(--ok)}
+.mod-h b{display:block;font-size:16px}
+.mod-h small{color:var(--muted);font-size:13px;display:block;line-height:1.4}
+.les{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 62px;border-top:1px solid var(--line);cursor:pointer;font-size:14.5px}
+.les:hover{background:var(--panel2)}
+.les .ck{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-size:11px}
+.les.done .ck{background:var(--ok);border-color:var(--ok);color:#111}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:6px}
+.crumb a{cursor:pointer;text-decoration:none}
+article h2{font-family:"Barlow Condensed",sans-serif;font-size:32px;line-height:1.1;margin:0 0 16px}
+article h3{font-family:"Barlow Condensed",sans-serif;font-size:21px;letter-spacing:.4px;color:var(--accent2);margin:26px 0 8px;text-transform:uppercase}
+article p{margin:0 0 14px}
+article ul,article ol{margin:0 0 14px;padding-left:22px}
+article li{margin:5px 0}
+.tip,.warn{border-radius:0 10px 10px 0;padding:12px 14px;margin:0 0 16px;font-size:15px}
+.tip{background:rgba(255,255,255,.04);border-left:3px solid var(--accent)}
+.warn{background:rgba(255,90,90,.08);border-left:3px solid var(--bad)}
+.tip b:first-child,.warn b:first-child{display:block;margin-bottom:2px}
+.copy{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:0 0 16px;overflow:hidden}
+.copy-h{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:var(--accent2);gap:8px}
+.copy-h button{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:5px 11px;font-size:12.5px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.copy pre{margin:0;padding:12px 14px;white-space:pre-wrap;font-family:inherit;font-size:14.5px;line-height:1.55;color:#d7dbe0}
+.checks{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 0;margin:0 0 16px}
+.checks label{display:flex;gap:12px;padding:8px 14px;cursor:pointer;font-size:15px;align-items:flex-start}
+.checks label:hover{background:var(--panel2)}
+.checks input{width:19px;height:19px;accent-color:var(--accent);flex:none;margin-top:3px}
+.checks input:checked+span{color:var(--muted);text-decoration:line-through}
+.checks .cnt{font-size:12.5px;color:var(--muted);padding:4px 14px 6px;border-bottom:1px solid var(--line);margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:14.5px;background:var(--panel);border-radius:12px;overflow:hidden}
+th{text-align:left;background:var(--panel2);color:var(--accent2);font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;padding:9px 10px}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+.tblwrap{overflow-x:auto;margin:0 0 16px}.tblwrap table{margin:0;min-width:520px}
+.quiz{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.quiz .qh{font-family:"Barlow Condensed",sans-serif;font-size:20px;color:var(--accent2);margin-bottom:10px;text-transform:uppercase}
+.q{margin-bottom:18px}.q p{font-weight:600;margin-bottom:8px}
+.opt{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:9px 12px;margin:6px 0;cursor:pointer;font-family:inherit;font-size:14.5px}
+.opt:hover{border-color:var(--accent)}
+.opt.right{border-color:var(--ok);background:rgba(62,207,142,.1)}
+.opt.wrong{border-color:var(--bad);background:rgba(255,90,90,.08)}
+.expl{font-size:14px;color:var(--muted);margin-top:4px}
+.score{font-weight:700;margin-top:6px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ok);color:#111;font-weight:700;padding:9px 16px;border-radius:99px;font-size:14px;display:none;z-index:70}
+.cert{background:#fff;color:#1a1a1a;border-radius:12px;padding:36px 28px;text-align:center;border:10px solid var(--accent);margin:0 0 16px}
+.cert .t{font-family:"Barlow Condensed",sans-serif;font-size:34px;letter-spacing:1px;text-transform:uppercase}
+.cert .n{font-size:30px;font-weight:700;border-bottom:2px solid #ccc;display:inline-block;padding:6px 20px;margin:14px 0;min-width:60%}
+.cert small{color:#666;display:block;margin-top:14px;font-size:12px}
+.foot{margin-top:30px;font-size:12px;color:#6b727c}
+@media print{body{background:#fff}.wrap>*:not(#view),.nav,.crumb,#a2hs,.noprint{display:none!important}article>*:not(.cert){display:none}.cert{border-width:6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header id="home-link"><div class="logo"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
+ <div style="flex:1;min-width:0"><h1 class="brand">Hybrid & EV Fundamentals</h1><div class="sub">Understand, service and earn from hybrid & electric cars safely</div></div></header>
+ <div id="view"></div>
+ <div class="foot">This course provides general education only and is not high-voltage safety certification. Never work on high-voltage components without accredited training, certified equipment and the manufacturer's procedures. Your progress is saved on this device.</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const COURSE={
+id:"hybrid-ev",
+heroTitle:"Cars are going electric. Don't get left behind.",
+heroText:"Learn how hybrids and EVs work, how to stay safe around high voltage, what maintenance is different, and which hybrid & EV jobs you can start offering now.",
+certTitle:"Hybrid & EV Fundamentals",
+certNote:"Course completion certificate. This is not a high-voltage work qualification. Working on high-voltage systems requires manufacturer or accredited high-voltage safety training.",
+modules:[
+/* 1 */
+{t:"Why Hybrids & EVs Matter to You",d:"The opportunity, and why most of the work isn't high-voltage at all.",lessons:[
+{t:"The opportunity",b:[
+["p","Hybrids, plug-in hybrids and fully electric cars make up a fast-growing share of new car sales in many countries, and millions are already on the road. Every one of them still needs tyres, brakes, suspension, 12-volt batteries, filters and inspections."],
+["p","Here's the part most beginners miss: <b>a large share of hybrid and EV work has nothing to do with the high-voltage system.</b> If you understand how these cars are built and how to stay safe around them, you can confidently take jobs that other beginner mechanics turn away."],
+["h","What owners need most"],
+["ul",["Tyres and rotations (EVs are heavy and can wear tyres faster)","Brake inspections and service (yes, they still need it, see Module 5)","12-volt battery testing and replacement","Cabin filters, wipers, bulbs, suspension parts","Hybrid engine oil changes and coolant checks","Pre-purchase inspections, including battery health"]],
+["tip","<b>Big picture:</b> You don't need to repair high-voltage batteries to earn from hybrids and EVs. You need to know what's safe, what's different, and when to say \"that one's for a certified specialist\"."],
+["quiz",[
+{q:"Which of these jobs on an EV usually does NOT involve the high-voltage system?",o:["Replacing the high-voltage battery","Tyre rotation","Replacing the inverter"],a:1,e:"Tyres, brakes, suspension, 12V batteries and filters are normal mechanical work. You still need to follow the vehicle's safety procedures."}
+]]
+]}
+]},
+/* 2 */
+{t:"Types of Electrified Vehicles",d:"Mild hybrid, full hybrid, plug-in hybrid, EV: know exactly what you're looking at.",lessons:[
+{t:"The 4 main types",b:[
+["table",["Type","Petrol engine?","Plugs in?","How it works"],[
+["<b>Mild hybrid (MHEV)</b>","Yes","No","A small electric motor (often 48V) helps the engine and powers start-stop. It can't drive the car on electric alone."],
+["<b>Full hybrid (HEV)</b>","Yes","No","Engine and electric motor work together. It can drive short distances on electric. The battery charges from the engine and from braking."],
+["<b>Plug-in hybrid (PHEV)</b>","Yes","Yes","A bigger battery you charge from the grid. It drives a useful distance on electric, then works like a hybrid."],
+["<b>Battery electric (BEV / EV)</b>","No","Yes","Battery and electric motor(s) only. No engine oil, spark plugs or exhaust."]]],
+["p","You may also see <b>fuel cell vehicles (FCEV)</b>, which make electricity from hydrogen. They're rare, and the hydrogen system needs specialist training."],
+["h","How to tell what you're working on"],
+["ul",["Badges: <i>Hybrid, PHEV, Plug-in, e-, EV, Electric, 48V</i>","A charge port as well as a fuel filler = plug-in hybrid","No exhaust pipe = battery electric","<b>Orange cables</b> under the hood or underneath = high-voltage system present","Owner's manual and the high-voltage warning labels"]],
+["quiz",[
+{q:"A car has a fuel filler AND a charging port. What is it most likely to be?",o:["Mild hybrid","Plug-in hybrid","Battery electric"],a:1,e:"Plug-in hybrids have both an engine (fuel filler) and a battery you can charge from the grid (charge port)."},
+{q:"Which type can NOT drive on electric power alone?",o:["Mild hybrid","Full hybrid","Battery electric"],a:0,e:"A mild hybrid's motor only helps the engine. It can't move the car on its own."},
+{q:"Which has no engine oil to change?",o:["Plug-in hybrid","Full hybrid","Battery electric"],a:2,e:"A battery electric car has no combustion engine, so no oil changes. It still has fluids like coolant, brake fluid and gearbox oil."}
+]]
+]}
+]},
+/* 3 */
+{t:"High-Voltage Safety",d:"The most important module. Learn it before you touch any hybrid or EV.",lessons:[
+{t:"Why high voltage is different",b:[
+["warn","<b>High voltage can kill</b>Hybrid and EV battery systems commonly run at hundreds of volts DC, and many EVs run at 400V or 800V. Contact with these circuits can cause fatal electric shock, severe burns and arc flash. Unlike a 12V system, you get no second chance."],
+["h","Recognise the danger"],
+["ul",["<b>Orange cables and connectors = high voltage.</b> Never cut, pierce, probe or unplug them.","High-voltage components include: the main battery pack, inverter / power electronics, electric drive motor(s), DC-DC converter, onboard charger, electric A/C compressor and electric heaters.","Look for yellow/orange high-voltage warning labels."]],
+["h","The hidden risks"],
+["ul",["<b>The car can be \"on\" while completely silent.</b> In <i>Ready</i> mode a hybrid's engine can start by itself at any moment, for example when its battery needs charging.","<b>Capacitors store energy</b> even after the system is switched off. Manufacturers specify a waiting time after disabling the system.","<b>Damaged, crashed or flooded</b> hybrids and EVs can have exposed live parts, and their batteries can overheat and catch fire hours or even days later."]],
+["quiz",[
+{q:"What does an orange cable on a hybrid or EV mean?",o:["It's a sensor wire","It's a high-voltage cable","It's the 12V battery cable"],a:1,e:"Orange is the industry colour for high-voltage cabling. Never cut, probe or disconnect it without proper training."},
+{q:"A hybrid is silent with the dash showing READY. Is it safe to work in the engine bay?",o:["Yes, the engine is off","No, the engine can start automatically in Ready mode"],a:1,e:"In Ready mode the engine may start at any time without warning. Always switch the vehicle fully off and keep the key away before working."}
+]]
+]},
+{t:"Safe working rules (what you CAN do)",b:[
+["p","This course teaches you to work <b>around</b> high-voltage systems safely, not to repair them. Repairing or disconnecting high-voltage parts requires manufacturer or accredited high-voltage training and certified protective equipment."],
+["h","Before ANY work on a hybrid or EV"],
+["check","hvsafe",["Identify the vehicle type (hybrid / PHEV / EV)","Check the service information for that model's specific safety procedures","Switch the vehicle completely OFF: no READY light, no dash lights","Keep the key fob well away from the car (so it can't be switched on by accident)","Make sure the car isn't plugged in to a charger","Chock the wheels and use the manufacturer's lift/jacking points only","Look for damage to orange cables, the battery case or warning lights before starting","If anything looks damaged, burnt or leaking: stop and refer it to a specialist"]],
+["h","Jacking and lifting"],
+["p","EVs and hybrids are heavy, and the battery pack is often a large flat case under the floor. <b>Never place a jack or stand under the battery pack.</b> Use only the lifting points shown in the manufacturer's information."],
+["h","What high-voltage technicians use (so you know what \"properly equipped\" means)"],
+["ul",["Insulating rubber gloves rated for the voltage (commonly Class 0, 1,000V), worn with leather protectors and air-tested before every use","Insulated tools rated to 1,000V","A CAT III or CAT IV rated meter","A rescue hook and a second trained person nearby","Manufacturer procedures for disabling the system and verifying zero voltage"]],
+["warn","<b>Golden rule</b>If the job means touching, unplugging or opening anything orange or high-voltage, it's not a job for this course. Refer it to a certified hybrid/EV technician."],
+["quiz",[
+{q:"Where should you NEVER place a jack on an EV?",o:["The manufacturer's lift points","Under the high-voltage battery pack","The jacking point shown in the manual"],a:1,e:"The battery pack can be damaged, which can cause a fire. Use only the manufacturer's lift points."},
+{q:"What should you do if you see a damaged orange cable?",o:["Tape it up and continue","Stop and refer the car to a certified specialist","Unplug it to be safe"],a:1,e:"Damaged high-voltage components are a serious hazard. Don't touch them. Stop and refer it."}
+]]
+]}
+]},
+/* 4 */
+{t:"How Hybrids & EVs Work",d:"The main parts and what each one does, explained simply.",lessons:[
+{t:"The main components",b:[
+["table",["Component","What it does","Think of it as…"],[
+["<b>High-voltage battery</b>","Stores energy to drive the motor(s)","The fuel tank"],
+["<b>Battery management system (BMS)</b>","Monitors cell voltages and temperatures, and protects the battery","The battery's brain"],
+["<b>Inverter</b>","Converts DC battery power to AC for the motor, and back again when regenerating","The translator"],
+["<b>Electric motor / generator</b>","Drives the wheels and acts as a generator when slowing down","The engine (and alternator)"],
+["<b>DC-DC converter</b>","Steps high voltage down to charge the 12V battery","Replaces the alternator"],
+["<b>Onboard charger</b>","Converts AC from a home charger into DC to charge the battery","The charging adapter"],
+["<b>Thermal management</b>","Separate coolant loops heat or cool the battery and electronics","The cooling system (×2 or ×3)"],
+["<b>12V battery</b>","Powers lights, screens, computers and the system that switches the car on","Same job as in a petrol car"]]],
+["h","Regenerative braking"],
+["p","When you lift off the accelerator or brake gently, the motor works as a generator, slowing the car and putting energy back in the battery. That's why hybrids and EVs use their brake pads far less."],
+["h","Charging levels"],
+["table",["Level","Where","Typical use"],[["AC slow (Level 1)","Normal household socket","Overnight top-up, slow"],["AC (Level 2)","Wallbox / public post","Home and work charging, a few hours"],["DC fast","Public rapid chargers","Road trips, fastest"]]],
+["p","Connector types vary by region and brand (for example Type 1/J1772, Type 2, CCS, CHAdeMO and NACS). Installing a home charger is a job for a licensed electrician."],
+["quiz",[
+{q:"Which part replaces the alternator in an EV?",o:["The inverter","The DC-DC converter","The onboard charger"],a:1,e:"The DC-DC converter steps high voltage down to keep the 12V battery charged, the job an alternator does in a petrol car."},
+{q:"Why do hybrid and EV brake pads often last longer?",o:["They use harder pads","Regenerative braking does much of the slowing","They don't have brakes on the rear"],a:1,e:"The motor slows the car while recharging the battery, so the friction brakes are used less."}
+]]
+]}
+]},
+/* 5 */
+{t:"Maintenance That's Different",d:"What changes compared with petrol cars. This is where your first hybrid & EV jobs come from.",lessons:[
+{t:"Service differences at a glance",b:[
+["table",["Job","Petrol car","Hybrid","EV"],[
+["Engine oil","✔","✔ (often low-viscosity like 0W-16/0W-20)","✖"],
+["Spark plugs","✔","✔ (engine runs less)","✖"],
+["12V battery","✔","✔ (very common issue)","✔ (very common issue)"],
+["Brake pads","✔","✔ last longer","✔ last longer"],
+["Brake caliper service","Normal","Important (low use → sticking/rust)","Important (low use → sticking/rust)"],
+["Brake fluid","✔","✔","✔"],
+["Coolant","1 loop","Engine + inverter loops","Battery/electronics loops"],
+["Tyres","Normal","Normal","Heavier car → can wear faster"],
+["Cabin filter","✔","✔","✔"],
+["Gearbox / reduction gear oil","✔","✔ per schedule","✔ per schedule"]]],
+["tip","<b>Always use the manufacturer's service schedule</b> for the exact model. Fluid types (especially coolant) and intervals vary a lot between brands."]
+]},
+{t:"Brakes, tyres, 12V & cooling: what to watch",b:[
+["h","Brakes"],
+["p","Because regen does most of the braking, pads last a long time, but calipers and slide pins can <b>seize and rotors can rust</b> from lack of use, especially in wet or salty climates. Cleaning and lubricating the slides is a valuable service."],
+["warn","<b>Electronic brake systems</b>On some hybrids and EVs the brake system can build pressure on its own, for example when a door opens or the car wakes up. This can trap your fingers in the caliper. Check the manufacturer's procedure. Many cars need a <b>brake service/maintenance mode</b> or a specific power-down before brake work."],
+["h","Tyres"],
+["ul",["EVs are heavy and have instant torque, so tyres can wear faster.","Use tyres with the correct load rating. Many EVs specify particular tyre models.","Rotate regularly and check alignment wear."]],
+["h","12V battery"],
+["p","The 12V battery is one of the most common reasons a hybrid or EV \"won't start\" (won't go into READY). It's usually smaller than a petrol car's battery and may be in the boot/trunk. Test it first on any no-start complaint. Some models need a specific battery type or a battery registration after replacement."],
+["h","Cooling systems"],
+["p","Hybrids and EVs can have several separate coolant loops (engine, inverter/electronics, battery). Use the exact coolant specified. Some loops need a scan tool procedure to bleed air out properly."],
+["h","Hybrid battery cooling fan & filter"],
+["p","Many hybrids cool the high-voltage battery with cabin air through a vent, often near the rear seats. If the vent or fan filter clogs with dust or pet hair, the battery runs hot, which can reduce performance and battery life. Cleaning an accessible intake vent/filter (following the service information, and <b>without opening the battery pack</b>) is a quick, valuable service."],
+["quiz",[
+{q:"A hybrid won't go into READY mode and the dash flickers. What should you check first?",o:["The high-voltage battery","The 12V battery","The inverter"],a:1,e:"A weak 12V battery is one of the most common causes. Test it first. It's safe, quick and often the fix."},
+{q:"Why can brakes on EVs seize even though pads last longer?",o:["They get too hot","They're used less, so slides and calipers can rust or stick","EV brake fluid is different"],a:1,e:"Low use plus moisture means corrosion. Regular cleaning and lubrication of the slides prevents it."}
+]]
+]}
+]},
+/* 6 */
+{t:"Common Problems & Diagnosis Basics",d:"Recognise the usual faults, and diagnose them safely using data, not probes.",lessons:[
+{t:"Common hybrid & EV problems",b:[
+["table",["Symptom","Common causes","Who fixes it"],[
+["Won't go into READY / dead dash","Weak 12V battery, 12V terminals","You (12V work)"],
+["Worse fuel economy, engine runs more (hybrid)","Ageing hybrid battery, clogged battery cooling vent, tyre pressure, brakes dragging","You can check vents, tyres, brakes. Battery issues → specialist"],
+["\"Check hybrid system\" type warning","Many possible causes. Scan for codes first","Diagnose with a scan tool; HV repairs → specialist"],
+["Won't charge","Charging cable/station fault, home outlet/breaker, charge port, onboard charger","Check cable, station and settings first; vehicle-side HV faults → specialist"],
+["Reduced range (EV)","Cold weather, tyre pressure, battery ageing, heavy heating/A/C use","Check basics; battery health check with a capable scan tool"],
+["Grinding/scraping from brakes","Rusted rotors or sticking calipers from low use","You (with brake service mode if required)"]]],
+["p","Hybrid-specific trouble codes exist in the generic standard (for example <b>P0A80 – Replace Hybrid Battery Pack</b>), but many hybrid and EV codes are manufacturer-specific. Always look them up for the exact vehicle."]
+]},
+{t:"Diagnosing safely with a scan tool",b:[
+["p","The safe way for a non-certified mechanic to learn about the high-voltage system is through <b>data</b>, not by probing wires. A capable scan tool can show a lot without you touching anything orange."],
+["ul",["Stored and pending codes from the hybrid/EV control modules","Battery state of charge and, on many vehicles, state of health","Individual battery block or cell voltages (big differences between blocks can point to a weak battery)","Battery and inverter temperatures","Cooling fan and pump operation"]],
+["tip","<b>Buying tip:</b> Basic code readers often can't read hybrid/EV modules. Look for a scan tool that lists hybrid/EV battery data for the brands you see most. Some popular models also have phone apps with OBD adapters that show battery health."],
+["quiz",[
+{q:"What's the safe way for a non-certified mechanic to check a hybrid battery's health?",o:["Measure the battery terminals with a multimeter","Read battery data with a capable scan tool","Open the battery pack and inspect the cells"],a:1,e:"Scan tool data shows block voltages, temperatures and state of health without touching high-voltage parts."}
+]]
+]}
+]},
+/* 7 */
+{t:"Earning From Hybrids & EVs",d:"Services you can offer now, and the path to full high-voltage certification.",lessons:[
+{t:"Services you can start offering",b:[
+["p","With this knowledge, the right safety procedures and the vehicle's service information, these are realistic services to add to your menu:"],
+["check","evservices",["12V battery testing and replacement for hybrids & EVs","Tyre rotation and tyre checks (EV-rated tyres)","Brake inspection, slide cleaning and lubrication (using brake service mode where required)","Cabin filter, wipers and bulbs","Hybrid engine oil changes with the correct low-viscosity oil","Hybrid battery cooling vent / filter cleaning (accessible vents only)","Hybrid & EV pre-purchase inspection with scan-tool battery data","Charging problem triage (cable, station, settings) and referral"]],
+["copy","Facebook post: hybrid & EV services","⚡ Hybrid & EV owners in [area]! ⚡\n\nI now service hybrids and electric vehicles at your home:\n🔋 12V battery testing & replacement\n🛑 Brake service (EVs rust brakes from low use!)\n🛞 Tyre rotations\n🌬️ Hybrid battery cooling vent cleaning\n🔍 Used hybrid/EV inspections with battery health check\n\nMessage me or text [phone] for a quote."],
+["copy","Upsell text for hybrid owners","Hi [Name], while I was working on your [hybrid], I noticed the hybrid battery cooling vent is [dusty/blocked]. A clogged vent makes the battery run hotter, which can hurt performance and shorten its life. I can clean it for [price] while I'm here. Want me to?"]
+]},
+{t:"Going further: certification",b:[
+["p","If you want to work on high-voltage systems themselves (battery packs, inverters, motors), you need proper training and equipment. Options depend on your country:"],
+["ul",["<b>Manufacturer training</b>: many brands train technicians on their own hybrid/EV systems.","<b>ASE L3 Light Duty Hybrid/Electric Vehicle Specialist</b> (USA): an advanced certification for experienced techs.","<b>IMI electric/hybrid vehicle qualifications</b> (UK): levels from awareness through to high-voltage repair.","<b>Local accredited high-voltage safety courses</b>: check your country's automotive training bodies."]],
+["tip","<b>Smart path:</b> Start with the safe services above, build experience and income, then invest in certification once you see steady hybrid & EV demand in your area."],
+["quiz",[
+{q:"Which of these is a job you should refer to a certified specialist?",o:["Replacing the 12V battery","Replacing a hybrid battery module","Rotating the tyres"],a:1,e:"Anything inside the high-voltage battery or system requires high-voltage training and certified equipment."},
+{q:"A customer asks you to install a home EV wallbox charger. What do you tell them?",o:["Sure, it's just plugging it in","That needs a licensed electrician","Only the car dealer can do it"],a:1,e:"Home charger installation is electrical installation work and must be done by a licensed electrician."}
+],"Final check"]
+]},
+{t:"Your certificate",b:[
+["p","Well done on completing Hybrid & EV Fundamentals! Add your name and save your certificate of completion."],
+["cert"]
+]}
+]}
+]}
+;
+const KEY="course_"+COURSE.id;
+let S={done:{},checks:{},quiz:{}};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const all=[];COURSE.modules.forEach((m,mi)=>m.lessons.forEach((l,li)=>all.push({mi,li,id:`l-${mi+1}-${li+1}`,m,l})));
+function pct(){return Math.round(100*all.filter(x=>S.done[x.id]).length/all.length)}
+function toast(t){const e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",1800)}
+function home(){
+ const next=all.find(x=>!S.done[x.id])||all[0];const p=pct();
+ $("view").innerHTML=`<div class="hero"><h2>${COURSE.heroTitle}</h2><p>${COURSE.heroText}</p>
+ <div class="prog"><span>Your progress</span><span>${p}%</span></div><div class="bar"><i style="width:${p}%"></i></div>
+ <div style="margin-top:16px"><a class="btn" href="#${next.id}">${p===0?"Start here →":p===100?"Review the course →":"Continue: "+esc(next.l.t)+" →"}</a></div></div>
+ ${COURSE.modules.map((m,mi)=>{const ls=all.filter(x=>x.mi===mi);const d=ls.every(x=>S.done[x.id]);
+  return `<div class="mod"><div class="mod-h"><div class="num ${d?"done":""}">${d?"✓":mi+1}</div><div><b>${esc(m.t)}</b><small>${esc(m.d)}</small></div></div>
+  ${ls.map(x=>`<div class="les ${S.done[x.id]?"done":""}" data-go="${x.id}"><span class="ck">${S.done[x.id]?"✓":""}</span>${esc(x.l.t)}</div>`).join("")}</div>`}).join("")}`;
+ window.scrollTo(0,0);
+}
+function block(b,lid,bi){
+ const t=b[0];
+ if(t==="p")return `<p>${b[1]}</p>`;
+ if(t==="h")return `<h3>${b[1]}</h3>`;
+ if(t==="ul"||t==="ol")return `<${t}>${b[1].map(x=>`<li>${x}</li>`).join("")}</${t}>`;
+ if(t==="tip")return `<div class="tip">${b[1]}</div>`;
+ if(t==="warn")return `<div class="warn">${b[1]}</div>`;
+ if(t==="copy")return `<div class="copy"><div class="copy-h"><span>${esc(b[1])}</span><button data-copy="${lid}-${bi}">Copy</button></div><pre id="c-${lid}-${bi}">${esc(b[2])}</pre></div>`;
+ if(t==="table")return `<div class="tblwrap"><table><thead><tr>${b[1].map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${b[2].map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+ if(t==="check"){const id=b[1];const st=S.checks[id]||{};const n=b[2].filter((_,i)=>st[i]).length;
+  return `<div class="checks"><div class="cnt" id="cnt-${id}">${n} of ${b[2].length} done</div>${b[2].map((x,i)=>`<label><input type="checkbox" data-ck="${id}" data-i="${i}" ${st[i]?"checked":""}><span>${x}</span></label>`).join("")}</div>`}
+ if(t==="quiz"){const qid=lid+"-"+bi;
+  return `<div class="quiz" id="qz-${qid}"><div class="qh">${b[2]||"Quick check"}</div>${b[1].map((q,qi)=>`<div class="q" data-q="${qi}"><p>${qi+1}. ${q.q}</p>${q.o.map((o,oi)=>`<button class="opt" data-qz="${qid}" data-qi="${qi}" data-oi="${oi}">${o}</button>`).join("")}<div class="expl" id="ex-${qid}-${qi}"></div></div>`).join("")}<div class="score" id="sc-${qid}"></div></div>`}
+ if(t==="cert"){const nm=S.certName||"";
+  return `<div class="noprint" style="margin-bottom:12px"><label style="font-size:13px;color:var(--muted)">Your name as it should appear</label><div style="display:flex;gap:8px;margin-top:4px"><input id="certname" value="${esc(nm)}" style="flex:1;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px;font-size:15px;font-family:inherit"><button class="btn" id="certprint">Print / Save PDF</button></div></div>
+  <div class="cert"><div style="font-size:13px;letter-spacing:2px;color:#888">CERTIFICATE OF COMPLETION</div><div class="t">${COURSE.certTitle}</div><div>This confirms that</div><div class="n" id="certn">${esc(nm)||"&nbsp;"}</div><div>has completed all modules of the ${COURSE.certTitle} course.</div><div style="margin-top:10px;color:#666">${new Date().toLocaleDateString()}</div><small>${COURSE.certNote}</small></div>`}
+ return "";
+}
+function lesson(id){
+ const i=all.findIndex(x=>x.id===id);if(i<0)return home();
+ const x=all[i],prev=all[i-1],next=all[i+1];
+ $("view").innerHTML=`<div class="crumb"><a data-home>← All modules</a> · Module ${x.mi+1}: ${esc(x.m.t)}</div>
+ <article><h2>${esc(x.l.t)}</h2>${x.l.b.map((b,bi)=>block(b,x.id,bi)).join("")}</article>
+ <div class="nav">${prev?`<a class="btn ghost" href="#${prev.id}">← Back</a>`:"<span></span>"}
+ <button class="btn" id="done">${S.done[id]?"✓ Completed · ":"Mark complete · "}${next?"Next →":"Finish 🎉"}</button></div>`;
+ $("done").onclick=()=>{S.done[id]=true;save();if(next){location.hash=next.id}else{toast("Course complete! 🎉");location.hash=""}};
+ window.scrollTo(0,0);
+}
+function route(){const h=location.hash.slice(1);h.startsWith("l-")?lesson(h):home()}
+document.addEventListener("click",async e=>{
+ const g=e.target.closest("[data-go]");if(g){location.hash=g.dataset.go;return}
+ if(e.target.closest("[data-home]")||e.target.closest("#home-link")){location.hash="";return}
+ const c=e.target.closest("[data-copy]");
+ if(c){const t=$("c-"+c.dataset.copy).textContent;try{await navigator.clipboard.writeText(t);c.textContent="Copied ✓";setTimeout(()=>c.textContent="Copy",1500)}catch(err){const r=document.createRange();r.selectNodeContents($("c-"+c.dataset.copy));const s=getSelection();s.removeAllRanges();s.addRange(r);c.textContent="Selected, now copy"}return}
+ const o=e.target.closest("[data-qz]");
+ if(o){const qid=o.dataset.qz,qi=+o.dataset.qi,oi=+o.dataset.oi;
+  const [_,mi,li]=qid.split("-");const bi=+qid.split("-")[3];
+  const x=all.find(a=>a.id===`l-${mi}-${li}`);const q=x.l.b[bi][1][qi];
+  const box=o.parentElement;if(box.dataset.ans)return;box.dataset.ans=1;
+  box.querySelectorAll(".opt").forEach((b,k)=>{if(k===q.a)b.classList.add("right");else if(k===oi)b.classList.add("wrong")});
+  $(`ex-${qid}-${qi}`).innerHTML=(oi===q.a?"✅ Correct. ":"❌ Not quite. ")+q.e;
+  S.quiz[qid]=S.quiz[qid]||{};S.quiz[qid][qi]=oi===q.a;save();
+  const total=x.l.b[bi][1].length,ans=Object.keys(S.quiz[qid]).length;
+  if(document.querySelectorAll(`#qz-${qid} .q[data-ans]`).length===total){const r=document.querySelectorAll(`#qz-${qid} .opt.right`).length;const sc=Object.values(S.quiz[qid]).filter(Boolean).length;$("sc-"+qid).textContent=`Score: ${sc}/${total}${sc===total?" 🔥 Perfect!":sc>=total*.7?" 👍 Nice work.":" Review the lesson and try again later."}`}
+  return}
+ if(e.target.id==="certprint"){try{window.print()}catch(err){}}
+});
+document.addEventListener("change",e=>{
+ const c=e.target.closest("[data-ck]");if(!c)return;
+ const id=c.dataset.ck;S.checks[id]=S.checks[id]||{};S.checks[id][c.dataset.i]=c.checked;save();
+ const tot=document.querySelectorAll(`[data-ck="${id}"]`).length,n=document.querySelectorAll(`[data-ck="${id}"]:checked`).length;
+ $("cnt-"+id).textContent=`${n} of ${tot} done`;
+});
+document.addEventListener("input",e=>{if(e.target.id==="certname"){S.certName=e.target.value;save();$("certn").innerHTML=esc(e.target.value)||"&nbsp;"}});
+window.addEventListener("hashchange",route);route();
+</script>
+<!-- Add to Home Screen tip -->
+<style>
+#a2hs{position:fixed;left:12px;right:12px;bottom:12px;z-index:50;max-width:520px;margin:0 auto;background:#1e2228;border:1px solid #ff7a1a;border-radius:14px;padding:14px 40px 14px 14px;box-shadow:0 10px 30px rgba(0,0,0,.5);font-size:14px;color:#e8eaed;line-height:1.45;display:none}
+#a2hs b{color:#ffb27a}#a2hs .xx{position:absolute;top:6px;right:8px;background:none;border:0;color:#9aa1ab;font-size:22px;cursor:pointer}
+@media print{#a2hs{display:none!important}}
+</style>
+<div id="a2hs" role="dialog" aria-label="Add to home screen"><button class="xx" aria-label="Dismiss">×</button><div id="a2hs-t"></div></div>
+<script>
+(function(){
+ try{
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  const key='a2hs_'+location.pathname;
+  if(standalone||localStorage.getItem(key))return;
+  const ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua), android=/Android/.test(ua);
+  if(!ios&&!android)return;
+  const el=document.getElementById('a2hs');
+  document.getElementById('a2hs-t').innerHTML=ios
+   ?'<b>📲 Save this app to your phone:</b> tap the <b>Share</b> button (square with an arrow) in Safari, then <b>“Add to Home Screen”</b>.'
+   :'<b>📲 Save this app to your phone:</b> tap the <b>⋮ menu</b> in Chrome, then <b>“Add to Home screen”</b> or <b>“Install app”</b>.';
+  setTimeout(()=>el.style.display='block',4000);
+  el.querySelector('.xx').onclick=()=>{el.style.display='none';try{localStorage.setItem(key,'1')}catch(e){}};
+ }catch(e){}
+})();
+</script>
+
+</body>
+</html>

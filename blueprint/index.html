@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mobile Mechanic Blueprint – Side-Income Playbook</title>
+<link rel="manifest" href="/blueprint/manifest.webmanifest">
+<meta name="theme-color" content="#0f1114">
+<link rel="apple-touch-icon" href="/blueprint/icon-180.png">
+<link rel="icon" href="/blueprint/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Blueprint">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1114;--panel:#171a1f;--panel2:#1e2228;--line:#2a2f37;--text:#e8eaed;--muted:#9aa1ab;--accent:#ff7a1a;--accent2:#ffb27a;--ok:#3ecf8e;--warn:#f5b941;--bad:#ff5a5a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--accent2)}
+.wrap{max-width:820px;margin:0 auto;padding:18px 16px 90px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:16px;cursor:pointer}
+.logo{width:44px;height:44px;border-radius:10px;background:var(--accent);display:grid;place-items:center;flex:none}
+h1.brand{font-family:"Barlow Condensed",sans-serif;font-size:26px;letter-spacing:.5px;margin:0;line-height:1;text-transform:uppercase}
+.sub{color:var(--muted);font-size:13px}
+.bar{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.hero{background:linear-gradient(135deg,var(--panel),#121418);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px}
+.hero h2{font-family:"Barlow Condensed",sans-serif;font-size:30px;line-height:1.1;margin:0 0 6px}
+.hero p{color:var(--muted);margin:0 0 16px}
+.prog{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px}
+.btn{background:var(--accent);color:#111;border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-family:inherit;font-size:15px;display:inline-block;text-decoration:none}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.mod{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.mod-h{padding:14px 16px;display:flex;gap:12px;align-items:center}
+.num{flex:none;width:34px;height:34px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-weight:700;color:var(--accent2);font-size:14px}
+.num.done{background:var(--ok);color:#111;border-color:var(--ok)}
+.mod-h b{display:block;font-size:16px}
+.mod-h small{color:var(--muted);font-size:13px;display:block;line-height:1.4}
+.les{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 62px;border-top:1px solid var(--line);cursor:pointer;font-size:14.5px}
+.les:hover{background:var(--panel2)}
+.les .ck{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-size:11px}
+.les.done .ck{background:var(--ok);border-color:var(--ok);color:#111}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:6px}
+.crumb a{cursor:pointer;text-decoration:none}
+article h2{font-family:"Barlow Condensed",sans-serif;font-size:32px;line-height:1.1;margin:0 0 16px}
+article h3{font-family:"Barlow Condensed",sans-serif;font-size:21px;letter-spacing:.4px;color:var(--accent2);margin:26px 0 8px;text-transform:uppercase}
+article p{margin:0 0 14px}
+article ul,article ol{margin:0 0 14px;padding-left:22px}
+article li{margin:5px 0}
+.tip,.warn{border-radius:0 10px 10px 0;padding:12px 14px;margin:0 0 16px;font-size:15px}
+.tip{background:rgba(255,255,255,.04);border-left:3px solid var(--accent)}
+.warn{background:rgba(255,90,90,.08);border-left:3px solid var(--bad)}
+.tip b:first-child,.warn b:first-child{display:block;margin-bottom:2px}
+.copy{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:0 0 16px;overflow:hidden}
+.copy-h{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:var(--accent2);gap:8px}
+.copy-h button{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:5px 11px;font-size:12.5px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.copy pre{margin:0;padding:12px 14px;white-space:pre-wrap;font-family:inherit;font-size:14.5px;line-height:1.55;color:#d7dbe0}
+.checks{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 0;margin:0 0 16px}
+.checks label{display:flex;gap:12px;padding:8px 14px;cursor:pointer;font-size:15px;align-items:flex-start}
+.checks label:hover{background:var(--panel2)}
+.checks input{width:19px;height:19px;accent-color:var(--accent);flex:none;margin-top:3px}
+.checks input:checked+span{color:var(--muted);text-decoration:line-through}
+.checks .cnt{font-size:12.5px;color:var(--muted);padding:4px 14px 6px;border-bottom:1px solid var(--line);margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:14.5px;background:var(--panel);border-radius:12px;overflow:hidden}
+th{text-align:left;background:var(--panel2);color:var(--accent2);font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;padding:9px 10px}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+.tblwrap{overflow-x:auto;margin:0 0 16px}.tblwrap table{margin:0;min-width:520px}
+.quiz{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.quiz .qh{font-family:"Barlow Condensed",sans-serif;font-size:20px;color:var(--accent2);margin-bottom:10px;text-transform:uppercase}
+.q{margin-bottom:18px}.q p{font-weight:600;margin-bottom:8px}
+.opt{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:9px 12px;margin:6px 0;cursor:pointer;font-family:inherit;font-size:14.5px}
+.opt:hover{border-color:var(--accent)}
+.opt.right{border-color:var(--ok);background:rgba(62,207,142,.1)}
+.opt.wrong{border-color:var(--bad);background:rgba(255,90,90,.08)}
+.expl{font-size:14px;color:var(--muted);margin-top:4px}
+.score{font-weight:700;margin-top:6px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ok);color:#111;font-weight:700;padding:9px 16px;border-radius:99px;font-size:14px;display:none;z-index:70}
+.cert{background:#fff;color:#1a1a1a;border-radius:12px;padding:36px 28px;text-align:center;border:10px solid var(--accent);margin:0 0 16px}
+.cert .t{font-family:"Barlow Condensed",sans-serif;font-size:34px;letter-spacing:1px;text-transform:uppercase}
+.cert .n{font-size:30px;font-weight:700;border-bottom:2px solid #ccc;display:inline-block;padding:6px 20px;margin:14px 0;min-width:60%}
+.cert small{color:#666;display:block;margin-top:14px;font-size:12px}
+.foot{margin-top:30px;font-size:12px;color:#6b727c}
+@media print{body{background:#fff}.wrap>*:not(#view),.nav,.crumb,#a2hs,.noprint{display:none!important}article>*:not(.cert){display:none}.cert{border-width:6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header id="home-link"><div class="logo"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M11 12v2h2v-2"/></svg></div>
+ <div style="flex:1;min-width:0"><h1 class="brand">Mobile Mechanic Blueprint</h1><div class="sub">Your step-by-step plan to earn from your mechanic skills</div></div></header>
+ <div id="view"></div>
+ <div class="foot">Templates and checklists are general guidance, not legal, tax or insurance advice. Check the rules for your area. Your progress is saved on this device.</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const COURSE={
+id:"blueprint",
+heroTitle:"Turn your new skills into your first paying customers.",
+heroText:"A step-by-step plan to start a mobile or driveway mechanic side business: what to offer, what to charge, how to get your first 10 customers, and ready-to-copy scripts and templates.",
+certTitle:"Mobile Mechanic Blueprint",
+certNote:"Course completion certificate.",
+modules:[
+/* ---------------- MODULE 1 ---------------- */
+{t:"Start Here",d:"How the side-income model works and how to set it up the right way.",lessons:[
+{t:"How a mobile mechanic side business works",b:[
+["p","A mobile (or driveway) mechanic goes to the customer instead of the customer coming to a shop. You fix the car at their home or workplace. Customers love it because they don't lose half a day at a shop. You love it because you don't pay rent on a building."],
+["h","Why it's a great side income"],
+["ul",["<b>Low start-up cost:</b> your tools and a vehicle you already own.","<b>You choose your hours:</b> evenings and weekends are when most customers are home anyway.","<b>High demand:</b> people hate waiting rooms, and many shops are booked out for days.","<b>Repeat business:</b> every car needs oil, brakes and batteries again and again."]],
+["h","Realistic expectations"],
+["p","Most people start with <b>2–5 jobs a week</b> while keeping their main job. Start with simple, high-profit jobs (Module 3), build reviews, then grow."],
+["table",["Example week","Jobs","Avg labour hrs","Labour at $70/hr"],[["Starting out","3","1.2","$252"],["Building up","6","1.5","$630"],["Busy side business","10","1.5","$1,050"]]],
+["tip","<b>Note:</b> These are example numbers to show the maths, not a promise. Your rate depends on your area (Module 4). Parts markup and fees come on top of labour."],
+["quiz",[
+{q:"Why do customers choose a mobile mechanic over a shop?",o:["It's always cheaper","They don't have to drop off the car and wait","Mobile mechanics can do any repair"],a:1,e:"Convenience is the #1 reason. Price can be competitive, but convenience is what you're selling."},
+{q:"What's the smartest way to start?",o:["Take every job to grow fast","Start with a few simple, high-profit jobs and build reviews","Rent a garage first"],a:1,e:"Simple jobs done well build reviews and referrals with low risk."}
+]]
+]},
+{t:"Set up legally and protect yourself",b:[
+["p","You don't need a big setup, but you do need to cover the basics before you take money from strangers. Rules differ by country, state and city, so use this as a checklist of things to <b>look up for your area</b>."],
+["h","1. Business registration"],
+["p","In many places you can start as a sole trader / sole proprietor with a simple registration. Some people form an LLC or limited company for extra liability protection. Ask your local small-business office or an accountant which suits you."],
+["h","2. Auto repair rules"],
+["p","Some places require auto repair businesses to register or be licensed. For example, California requires registration with the Bureau of Automotive Repair. Search “<i>[your state/country] auto repair business registration</i>” before you start."],
+["h","3. Insurance"],
+["p","Talk to a local insurance agent about <b>general liability</b> (covers damage or injury caused by your work) and whether you need coverage for customer vehicles in your care. One accident without insurance can wipe out years of profit."],
+["h","4. Where you're allowed to work"],
+["p","Some cities, housing associations and apartment complexes don't allow repairs on the street or in parking lots. Always work on private property with the owner's permission, and ask the customer about it when booking."],
+["h","5. Environmental rules"],
+["ul",["Never pour oil, coolant or brake fluid on the ground or down a drain.","Take used oil and filters to a recycling point. Many auto parts stores accept used oil.","Carry drip pans, a ground sheet and absorbent (cat litter works) for spills."]],
+["check","legal",["Looked up how to register a business in my area","Checked whether my area requires auto repair registration or a licence","Got an insurance quote for general liability","Found where to recycle used oil, filters and coolant near me","Bought drip pans, a ground sheet and spill absorbent","Set up a separate bank account (or wallet) for business money"]],
+["warn","<b>Not legal advice</b>This lesson is a general checklist. Laws vary by location. Confirm the rules for your area with your local authority, an accountant or an insurance agent."]
+]}
+]},
+/* ---------------- MODULE 2 ---------------- */
+{t:"Your Starter Toolkit",d:"What to buy first, what can wait, and the safety rules that keep you working.",lessons:[
+{t:"The mobile mechanic tool list",b:[
+["p","You don't need a shop full of tools. Buy the essentials first, earn money, then upgrade. Tick items off as you get them."],
+["h","Essentials (buy before your first job)"],
+["check","tools1",["3/8\" and 1/2\" drive socket sets (metric + SAE), with extensions","Ratchets and a 1/2\" breaker bar","Torque wrench (at least one: 3/8\" or 1/2\")","Combination wrench set","Screwdrivers, pliers, side cutters, pick set","Low-profile floor jack (2–3 ton)","2 jack stands rated for the vehicle weight + wheel chocks","Oil drain pan, oil filter wrenches, funnel","OBD2 scanner that shows live data","Digital multimeter","Brake caliper piston tool + C-clamp","Headlamp or work light","Safety glasses, nitrile gloves","Fire extinguisher","Battery tester + jump starter pack","Ground mat or creeper, tool bag or rolling box"]],
+["h","Upgrades (buy from your profits)"],
+["check","tools2",["Cordless impact wrench","Bidirectional scan tool (can command parts on/off)","Brake fluid bleeder","Coolant pressure tester","Pop-up canopy for sun and rain","Code-reader-compatible tablet for reports","Small portable air compressor"]],
+["tip","<b>Money tip:</b> Many auto parts stores have free loaner tool programs for specialty tools (pullers, testers). Use them before buying."]
+]},
+{t:"Safety rules that keep you in business",b:[
+["p","One injury can end your side business. These rules are non-negotiable on every job."],
+["ol",["<b>Never get under a car held up only by a jack.</b> Always use rated jack stands on solid, level ground, and chock the wheels.","<b>Check the ground.</b> Soft dirt, gravel and hot asphalt can let stands sink. Use a board or plate under them if needed.","<b>Wear eye protection</b> whenever you're under the car or working with fluids or springs.","<b>Let the engine cool</b> before opening the cooling system or touching the exhaust.","<b>Disconnect the battery</b> before electrical work.","<b>Keep a fire extinguisher</b> within reach, especially near fuel.","<b>Leave airbags (SRS) and hybrid/EV high-voltage systems alone</b> unless you've been properly trained."]],
+["warn","<b>Walk away from unsafe jobs</b>No parking spot that's safe? Customer's car is on a slope? Reschedule. A lost job is better than an accident."]
+]}
+]},
+/* ---------------- MODULE 3 ---------------- */
+{t:"What to Offer (and What to Avoid)",d:"The jobs that make money with low risk, and the ones to say no to.",lessons:[
+{t:"Your best first services",b:[
+["p","Start with jobs that are <b>quick, common, low-risk and easy to price</b>. These are the bread and butter of mobile mechanics."],
+["table",["Service","Typical time","Why it's great"],[
+["Oil & filter change","30–45 min","Everyone needs it. Easy repeat customer."],
+["Brake pads & rotors","1–2 hrs per axle","Most profitable common job. High demand."],
+["Battery test & replacement","15–30 min","Fast, urgent, people pay for convenience."],
+["Check engine light diagnosis","30–60 min","Charge a diagnostic fee. Leads to repair work."],
+["Pre-purchase inspection","45–60 min","Used-car buyers pay well for peace of mind."],
+["Spark plugs & ignition coils","30 min–2 hrs","Fixes many misfire complaints."],
+["Serpentine belt","30–60 min","Quick, common, simple."],
+["Filters, wipers, bulbs","10–30 min","Easy add-ons to any job."]]],
+["tip","<b>Add-on trick:</b> On every job, do a free 5-minute check (tyres, wipers, lights, fluids, brake pad thickness). Tell the customer what you found. It builds trust and books your next job."]
+]},
+{t:"Jobs to turn down (for now)",b:[
+["p","Saying no to the wrong jobs protects your reputation and your profit. Avoid these until you have more experience, the right tools and the right insurance."],
+["ul",["<b>Internal transmission work</b>: needs special tools and a clean shop.","<b>Major engine work</b> (head gaskets, internal engine repairs, timing on interference engines) until you're experienced.","<b>A/C refrigerant work</b> unless you hold the certification your area requires.","<b>Airbag / SRS systems</b>: a safety risk.","<b>Hybrid & EV high-voltage systems</b>: need specific training and protective gear.","<b>Jobs that need a lift or alignment rack.</b>","<b>Badly rusted cars</b>: one seized bolt can turn a 1-hour job into a whole day."]],
+["copy","Text: politely turning down a job","Hi [Name], thanks for thinking of me! That job needs specialist equipment I don't carry on my mobile setup, so I'd recommend [Shop name] for that one. I'm happy to handle your oil changes, brakes, batteries and diagnostics anytime. Just message me."],
+["tip","<b>Turn \"no\" into money:</b> Partner with a local shop. Send them the big jobs and ask if they'll send you their small mobile jobs or pay a referral fee."]
+]}
+]},
+/* ---------------- MODULE 4 ---------------- */
+{t:"Pricing That Pays",d:"Set a rate that's fair, competitive and actually profitable.",lessons:[
+{t:"How to set your prices",b:[
+["h","Step 1: Find your local shop rate"],
+["p","Call or check the websites of 3 local shops and ask their hourly labour rate. Dealerships are usually the highest, independent shops lower. Many mobile mechanics price a little below independent shops at the start and raise prices as reviews come in."],
+["h","Step 2: Charge by the job, not by the minute"],
+["p","Professionals price using standard <b>labour times</b> (how long a job normally takes) from a labour guide, not how long it took you. If you're faster, you earn more per hour. If you're slower while learning, the customer doesn't pay for it."],
+["h","Step 3: Add the extras"],
+["ul",["<b>Parts markup:</b> many shops add 20–50% to the parts cost. That covers your time sourcing parts and the warranty risk.","<b>Diagnostic fee:</b> charge for diagnosis. Many mechanics credit it towards the repair if the customer goes ahead.","<b>Trip fee / minimum charge:</b> covers your travel on small jobs.","<b>Shop supplies:</b> a small % for cleaners, rags and consumables."]],
+["h","Example: front brake pads & rotors"],
+["table",["Item","Amount"],[["Labour 1.8 hrs × $70","$126.00"],["Parts cost $180 + 30% markup","$234.00"],["Shop supplies 5% of labour","$6.30"],["<b>Customer pays</b>","<b>$366.30</b>"],["<b>You keep (before tax & costs)</b>","<b>$186.30</b>"]]],
+["tip","<b>Speed it up:</b> If you have the QuotePro app, it does this maths for you in 30 seconds and sends the customer a clean quote."]
+]},
+{t:"Getting paid without headaches",b:[
+["ol",["<b>Never start without an approved quote.</b> Get a \"yes\" in writing. A text message is fine.","<b>Take a deposit for parts</b> on bigger jobs (e.g. parts cost upfront).","<b>Accept easy payments:</b> card reader, bank transfer or a payment app.","<b>Extra problem found?</b> Stop, explain, send an updated price and get a new \"yes\" before continuing."]],
+["copy","Text: sending a quote for approval","Hi [Name], here's your quote for the [Year Make Model]:\n\n[Job]: [Price]\nTotal: [Total]\n\nThis includes parts and labour. Reply YES to book, and let me know the best day and address. If I find anything else during the job, I'll check with you before doing any extra work."],
+["copy","Text: asking for a parts deposit","Thanks [Name]! To order your parts I take a deposit of [Amount] (the parts cost). The rest is due when the job's done. You can pay by [payment method]. As soon as it's in, I'll order the parts and confirm your appointment."],
+["copy","Text: extra problem found","Hi [Name], while doing the [job] I found [problem], for example [detail]. I'd recommend fixing it [now / soon] because [reason]. It would be [Price] extra. Want me to go ahead, or leave it for now? No pressure either way."]
+]}
+]},
+/* ---------------- MODULE 5 ---------------- */
+{t:"Get Your First 10 Customers",d:"Free, proven ways to get the phone ringing, with copy-paste posts.",lessons:[
+{t:"Set up your Google Business Profile",b:[
+["p","When people search \"mobile mechanic near me\", Google shows local business profiles first. It's free and it's the #1 source of customers for many mobile mechanics."],
+["check","gbp",["Created a Google Business Profile at google.com/business","Set it up as a service-area business (hide home address, list the towns/areas you cover)","Picked the most accurate category (e.g. mechanic / auto repair) and added your services","Added your phone number and hours","Uploaded at least 5 photos (you, your tools, a job in progress, a clean finished job)","Asked your first 3 customers for a review (template in Module 6)"]],
+["tip","<b>Reviews are everything.</b> 5–10 good reviews will often bring more calls than any ad. Ask every happy customer."]
+]},
+{t:"Facebook Marketplace & local groups",b:[
+["p","Local Facebook groups (town groups, community boards, buy/sell groups) are full of people asking \"anyone know a good mechanic?\" Always follow each group's rules about business posts."],
+["copy","Facebook post: introduce yourself","👋 Hi neighbours! I'm [Name], a local mobile mechanic. I come to YOUR driveway, so no shop visits and no waiting rooms.\n\n🔧 Oil changes\n🛑 Brakes (pads & rotors)\n🔋 Batteries\n⚠️ Check engine light diagnosis\n🔍 Pre-purchase inspections for used cars\n\nUp-front quotes, no surprises. Message me or call/text [phone]. Serving [areas]."],
+["copy","Reply when someone asks for a mechanic","Hi [Name]! I'm a mobile mechanic in [area], and I can come to you. What's the year, make and model, and what's it doing? I'll give you a quote up front. 📲 [phone]"],
+["copy","Marketplace listing (Services)","Title: Mobile Mechanic – I Come To You | Brakes • Oil • Batteries • Diagnostics\n\nSkip the shop. I do repairs and maintenance at your home or work in [areas].\n\n✔ Up-front quotes\n✔ Quality parts\n✔ [X]-day labour warranty\n\nMessage me with your year, make, model and the problem for a free quote."]
+]},
+{t:"Friends, family & referrals",b:[
+["p","Your first customers are usually people who already know you. Don't be shy. Tell everyone you're taking on work."],
+["copy","Message to friends & family","Hey [Name]! Quick one: I've started doing mobile car repairs on the side (oil changes, brakes, batteries, check engine lights). I come to you, and prices are better than most shops. If you or anyone you know needs anything, send them my way 🙏 [phone]"],
+["copy","Referral offer for happy customers","Thanks again, [Name]! If you know anyone who needs car work, send them my way. For every friend who books, I'll give you [$20 off your next service / a free oil change]. Just have them mention your name."]
+]},
+{t:"Neighbourhood apps & flyers",b:[
+["copy","Nextdoor / neighbourhood app post","Local mobile mechanic here 👋 I'm [Name] from [area]. I do brakes, oil changes, batteries, diagnostics and pre-purchase inspections right in your driveway. Up-front pricing, and I clean up after myself. Text [phone] for a quote."],
+["copy","Flyer / door hanger text","MOBILE MECHANIC: WE COME TO YOU\n\nBrakes • Oil Changes • Batteries • Check Engine Lights • Pre-Purchase Inspections\n\n✔ No shop visit, no waiting room\n✔ Up-front quotes\n✔ [X]-day labour warranty\n\nCall/Text [Name]: [phone]\n[Optional offer: $10 off your first service with this flyer]"],
+["tip","<b>Where to put flyers:</b> community notice boards, laundromats, coffee shops (ask first), and apartment complexes that allow it."]
+]},
+{t:"Small business fleets",b:[
+["p","Local businesses with work vans and trucks (landscapers, plumbers, cleaners, delivery services) lose money every hour a vehicle is at the shop. Servicing their vehicles on site can give you steady, repeat work."],
+["copy","Email / message to a local business","Subject: On-site vehicle maintenance for [Business name]\n\nHi [Name],\n\nI'm [Your name], a mobile mechanic in [area]. I service work vehicles on site, at your yard or parking lot, so your vans stay on the road instead of sitting at a shop.\n\nI handle oil changes, brakes, batteries, diagnostics and routine maintenance, with up-front quotes and a simple monthly invoice.\n\nWould it help if I did a free quick check on one of your vehicles this week?\n\nThanks,\n[Your name]\n[phone]"]
+]}
+]},
+/* ---------------- MODULE 6 ---------------- */
+{t:"Run Every Job Like a Pro",d:"A simple workflow plus every message and form you'll need.",lessons:[
+{t:"The pro job workflow",b:[
+["p","Follow the same steps on every job. Customers notice, and it protects you if anything goes wrong."],
+["check","workflow",["Booking: get the details (template below)","Confirm the location is safe and you're allowed to work there","Order parts and confirm the appointment the day before","Send an \"on my way\" message","Walk around the car and take photos of existing damage before you start","Do the job and torque everything to spec","Test the repair (start, check for leaks, test drive if appropriate)","Clean up: no oil spots, take your waste with you","Show the customer the old parts and explain what you did","Send the invoice and get paid","Ask for a review","Set a reminder for the next service"]],
+["copy","Booking questions (send when someone enquires)","Thanks for reaching out! To give you an accurate quote, can you send me:\n\n1. Year, make, model and engine size\n2. What's it doing? (noises, warning lights, when it happens)\n3. Your address or area\n4. Is there a safe, flat spot where I can work (driveway or private parking)?\n5. What days and times suit you?"]
+]},
+{t:"Customer message templates",b:[
+["copy","Appointment confirmation","Hi [Name], you're booked for [job] on [day] at [time] at [address]. Total: [price]. I'll text when I'm on the way. If anything changes, just let me know. See you then! [Your name]"],
+["copy","On my way","Hi [Name], I'm on my way and should be there in about [X] minutes. 🚗🔧"],
+["copy","Job done + invoice","All done, [Name]! ✅ I [what you did] on your [car]. Everything's tested and working.\n\nTotal: [amount]\nPay by: [payment options]\n\nYour labour is covered for [X] days. Any questions, just message me. Thanks for your business!"],
+["copy","Review request (send same day)","Thanks again, [Name]! If you were happy with the service, would you mind leaving a quick review? It really helps a small local business like mine 🙏\n[review link]"],
+["copy","Service reminder (set for 3–6 months later)","Hi [Name], it's [Your name], your mobile mechanic! Your [car] is probably due for [oil change / service] soon. Want me to swing by? I have openings on [days]."],
+["copy","Recommending future work","Hi [Name], quick heads-up from today's job: your [rear brakes / tyres / etc.] are at about [measurement], so they'll likely need replacing in [timeframe]. No rush. Just message me when you're ready and I'll send a quote."]
+]},
+{t:"Sample service agreement",b:[
+["p","A short written agreement sets expectations and protects both you and the customer. Have the customer sign it (on paper or with an e-signature app) before you start."],
+["copy","Sample service agreement","SERVICE AUTHORIZATION & AGREEMENT\n\nBusiness: [Your business name], [phone]\nCustomer: [Name], [phone]\nVehicle: [Year Make Model], Plate/VIN: [ ]\nService location: [address]\n\n1. Authorization: The customer authorizes the work listed on the attached quote for a total of [amount]. No extra work will be done without the customer's approval.\n2. Location: The customer confirms they have permission for repairs to be carried out at the service location.\n3. Existing condition: The mechanic is not responsible for pre-existing damage or wear, or for problems unrelated to the work performed.\n4. Customer-supplied parts: Parts supplied by the customer are not covered by any warranty.\n5. Payment: Payment is due when the work is completed, unless agreed otherwise.\n6. Warranty: Labour is warranted for [X] days. Parts are covered by the manufacturer's warranty.\n\nCustomer signature: ____________  Date: ________\nMechanic signature: ____________  Date: ________"],
+["warn","<b>Sample only</b>This template is a starting point, not legal advice. Have it reviewed by a local legal professional so it matches the laws in your area."]
+]},
+{t:"Pre-purchase inspection checklist",b:[
+["p","Used-car buyers will happily pay for a professional opinion before handing over thousands. Use this checklist on every inspection and send the buyer a short summary with photos."],
+["check","ppi",["Scan for stored and pending codes, and check emissions readiness monitors","Check for warning lights on the dash with the engine running","Engine oil level, colour and smell (milky = possible head gasket issue)","Coolant level and condition, and look for leaks","Transmission fluid (if checkable): level, colour, burnt smell","Listen to the engine on a cold start (ticks, knocks, rattles)","Check belts and hoses for cracks","Battery test and terminals","Tyre tread depth, uneven wear, matching brands","Brake pad thickness and rotor condition","Look underneath: leaks, rust, damaged exhaust","Suspension: bounce test, worn bushings, leaking shocks","Steering: play, noises, pulling","Lights, wipers, horn, windows, A/C and heater","Signs of accident repair: uneven panel gaps, overspray, mismatched paint","Test drive: shifting, braking, noises, vibration, pulling","Check the VIN matches the paperwork"]],
+["copy","Inspection summary to the buyer","Pre-purchase inspection: [Year Make Model], [mileage]\n\n✅ Good: [items]\n⚠️ Needs attention soon: [items + rough cost]\n❌ Concerns: [items]\n\nOverall: [Recommend / Negotiate / Walk away], because [short reason].\n\nPhotos attached. Happy to answer any questions!"]
+]}
+]},
+/* ---------------- MODULE 7 ---------------- */
+{t:"Your 30-Day Launch Plan",d:"Exactly what to do each week to go from zero to paying customers.",lessons:[
+{t:"30-day launch checklist",b:[
+["p","Work through one week at a time. Ticking these off is the difference between \"thinking about it\" and getting paid."],
+["h","Week 1: Set up"],
+["check","w1",["Finished the legal & safety checklist (Module 1)","Got the essential tools (Module 2)","Picked 4–6 starter services (Module 3)","Set your hourly rate, parts markup and minimum charge (Module 4)","Chose a simple business name and set up a separate payment account"]],
+["h","Week 2: Get visible"],
+["check","w2",["Created your Google Business Profile","Posted your intro in 3+ local Facebook groups","Sent the friends & family message to 20+ people","Posted on Nextdoor / your neighbourhood app","Printed 50–100 flyers"]],
+["h","Week 3: First jobs"],
+["check","w3",["Completed your first paid job","Used the workflow checklist on every job","Asked every customer for a review","Offered the referral deal"]],
+["h","Week 4: Grow"],
+["check","w4",["Reached 5+ reviews","Contacted 5 local businesses about fleet servicing","Set service reminders for every customer","Reviewed your prices: raise them if you're fully booked","Planned which tool upgrade to buy with your profits"]],
+["tip","<b>You've got this.</b> The first job is the hardest. After your first 10 happy customers, referrals start doing the marketing for you."]
+]},
+{t:"Your certificate",b:[
+["p","Congratulations on finishing the Mobile Mechanic Blueprint! Add your name and save your certificate."],
+["cert"]
+]}
+]}
+]}
+;
+const KEY="course_"+COURSE.id;
+let S={done:{},checks:{},quiz:{}};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const all=[];COURSE.modules.forEach((m,mi)=>m.lessons.forEach((l,li)=>all.push({mi,li,id:`l-${mi+1}-${li+1}`,m,l})));
+function pct(){return Math.round(100*all.filter(x=>S.done[x.id]).length/all.length)}
+function toast(t){const e=$("toast");e.textContent=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",1800)}
+function home(){
+ const next=all.find(x=>!S.done[x.id])||all[0];const p=pct();
+ $("view").innerHTML=`<div class="hero"><h2>${COURSE.heroTitle}</h2><p>${COURSE.heroText}</p>
+ <div class="prog"><span>Your progress</span><span>${p}%</span></div><div class="bar"><i style="width:${p}%"></i></div>
+ <div style="margin-top:16px"><a class="btn" href="#${next.id}">${p===0?"Start here →":p===100?"Review the course →":"Continue: "+esc(next.l.t)+" →"}</a></div></div>
+ ${COURSE.modules.map((m,mi)=>{const ls=all.filter(x=>x.mi===mi);const d=ls.every(x=>S.done[x.id]);
+  return `<div class="mod"><div class="mod-h"><div class="num ${d?"done":""}">${d?"✓":mi+1}</div><div><b>${esc(m.t)}</b><small>${esc(m.d)}</small></div></div>
+  ${ls.map(x=>`<div class="les ${S.done[x.id]?"done":""}" data-go="${x.id}"><span class="ck">${S.done[x.id]?"✓":""}</span>${esc(x.l.t)}</div>`).join("")}</div>`}).join("")}`;
+ window.scrollTo(0,0);
+}
+function block(b,lid,bi){
+ const t=b[0];
+ if(t==="p")return `<p>${b[1]}</p>`;
+ if(t==="h")return `<h3>${b[1]}</h3>`;
+ if(t==="ul"||t==="ol")return `<${t}>${b[1].map(x=>`<li>${x}</li>`).join("")}</${t}>`;
+ if(t==="tip")return `<div class="tip">${b[1]}</div>`;
+ if(t==="warn")return `<div class="warn">${b[1]}</div>`;
+ if(t==="copy")return `<div class="copy"><div class="copy-h"><span>${esc(b[1])}</span><button data-copy="${lid}-${bi}">Copy</button></div><pre id="c-${lid}-${bi}">${esc(b[2])}</pre></div>`;
+ if(t==="table")return `<div class="tblwrap"><table><thead><tr>${b[1].map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${b[2].map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+ if(t==="check"){const id=b[1];const st=S.checks[id]||{};const n=b[2].filter((_,i)=>st[i]).length;
+  return `<div class="checks"><div class="cnt" id="cnt-${id}">${n} of ${b[2].length} done</div>${b[2].map((x,i)=>`<label><input type="checkbox" data-ck="${id}" data-i="${i}" ${st[i]?"checked":""}><span>${x}</span></label>`).join("")}</div>`}
+ if(t==="quiz"){const qid=lid+"-"+bi;
+  return `<div class="quiz" id="qz-${qid}"><div class="qh">${b[2]||"Quick check"}</div>${b[1].map((q,qi)=>`<div class="q" data-q="${qi}"><p>${qi+1}. ${q.q}</p>${q.o.map((o,oi)=>`<button class="opt" data-qz="${qid}" data-qi="${qi}" data-oi="${oi}">${o}</button>`).join("")}<div class="expl" id="ex-${qid}-${qi}"></div></div>`).join("")}<div class="score" id="sc-${qid}"></div></div>`}
+ if(t==="cert"){const nm=S.certName||"";
+  return `<div class="noprint" style="margin-bottom:12px"><label style="font-size:13px;color:var(--muted)">Your name as it should appear</label><div style="display:flex;gap:8px;margin-top:4px"><input id="certname" value="${esc(nm)}" style="flex:1;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px;font-size:15px;font-family:inherit"><button class="btn" id="certprint">Print / Save PDF</button></div></div>
+  <div class="cert"><div style="font-size:13px;letter-spacing:2px;color:#888">CERTIFICATE OF COMPLETION</div><div class="t">${COURSE.certTitle}</div><div>This confirms that</div><div class="n" id="certn">${esc(nm)||"&nbsp;"}</div><div>has completed all modules of the ${COURSE.certTitle} course.</div><div style="margin-top:10px;color:#666">${new Date().toLocaleDateString()}</div><small>${COURSE.certNote}</small></div>`}
+ return "";
+}
+function lesson(id){
+ const i=all.findIndex(x=>x.id===id);if(i<0)return home();
+ const x=all[i],prev=all[i-1],next=all[i+1];
+ $("view").innerHTML=`<div class="crumb"><a data-home>← All modules</a> · Module ${x.mi+1}: ${esc(x.m.t)}</div>
+ <article><h2>${esc(x.l.t)}</h2>${x.l.b.map((b,bi)=>block(b,x.id,bi)).join("")}</article>
+ <div class="nav">${prev?`<a class="btn ghost" href="#${prev.id}">← Back</a>`:"<span></span>"}
+ <button class="btn" id="done">${S.done[id]?"✓ Completed · ":"Mark complete · "}${next?"Next →":"Finish 🎉"}</button></div>`;
+ $("done").onclick=()=>{S.done[id]=true;save();if(next){location.hash=next.id}else{toast("Course complete! 🎉");location.hash=""}};
+ window.scrollTo(0,0);
+}
+function route(){const h=location.hash.slice(1);h.startsWith("l-")?lesson(h):home()}
+document.addEventListener("click",async e=>{
+ const g=e.target.closest("[data-go]");if(g){location.hash=g.dataset.go;return}
+ if(e.target.closest("[data-home]")||e.target.closest("#home-link")){location.hash="";return}
+ const c=e.target.closest("[data-copy]");
+ if(c){const t=$("c-"+c.dataset.copy).textContent;try{await navigator.clipboard.writeText(t);c.textContent="Copied ✓";setTimeout(()=>c.textContent="Copy",1500)}catch(err){const r=document.createRange();r.selectNodeContents($("c-"+c.dataset.copy));const s=getSelection();s.removeAllRanges();s.addRange(r);c.textContent="Selected, now copy"}return}
+ const o=e.target.closest("[data-qz]");
+ if(o){const qid=o.dataset.qz,qi=+o.dataset.qi,oi=+o.dataset.oi;
+  const [_,mi,li]=qid.split("-");const bi=+qid.split("-")[3];
+  const x=all.find(a=>a.id===`l-${mi}-${li}`);const q=x.l.b[bi][1][qi];
+  const box=o.parentElement;if(box.dataset.ans)return;box.dataset.ans=1;
+  box.querySelectorAll(".opt").forEach((b,k)=>{if(k===q.a)b.classList.add("right");else if(k===oi)b.classList.add("wrong")});
+  $(`ex-${qid}-${qi}`).innerHTML=(oi===q.a?"✅ Correct. ":"❌ Not quite. ")+q.e;
+  S.quiz[qid]=S.quiz[qid]||{};S.quiz[qid][qi]=oi===q.a;save();
+  const total=x.l.b[bi][1].length,ans=Object.keys(S.quiz[qid]).length;
+  if(document.querySelectorAll(`#qz-${qid} .q[data-ans]`).length===total){const r=document.querySelectorAll(`#qz-${qid} .opt.right`).length;const sc=Object.values(S.quiz[qid]).filter(Boolean).length;$("sc-"+qid).textContent=`Score: ${sc}/${total}${sc===total?" 🔥 Perfect!":sc>=total*.7?" 👍 Nice work.":" Review the lesson and try again later."}`}
+  return}
+ if(e.target.id==="certprint"){try{window.print()}catch(err){}}
+});
+document.addEventListener("change",e=>{
+ const c=e.target.closest("[data-ck]");if(!c)return;
+ const id=c.dataset.ck;S.checks[id]=S.checks[id]||{};S.checks[id][c.dataset.i]=c.checked;save();
+ const tot=document.querySelectorAll(`[data-ck="${id}"]`).length,n=document.querySelectorAll(`[data-ck="${id}"]:checked`).length;
+ $("cnt-"+id).textContent=`${n} of ${tot} done`;
+});
+document.addEventListener("input",e=>{if(e.target.id==="certname"){S.certName=e.target.value;save();$("certn").innerHTML=esc(e.target.value)||"&nbsp;"}});
+window.addEventListener("hashchange",route);route();
+</script>
+<!-- Add to Home Screen tip -->
+<style>
+#a2hs{position:fixed;left:12px;right:12px;bottom:12px;z-index:50;max-width:520px;margin:0 auto;background:#1e2228;border:1px solid #ff7a1a;border-radius:14px;padding:14px 40px 14px 14px;box-shadow:0 10px 30px rgba(0,0,0,.5);font-size:14px;color:#e8eaed;line-height:1.45;display:none}
+#a2hs b{color:#ffb27a}#a2hs .xx{position:absolute;top:6px;right:8px;background:none;border:0;color:#9aa1ab;font-size:22px;cursor:pointer}
+@media print{#a2hs{display:none!important}}
+</style>
+<div id="a2hs" role="dialog" aria-label="Add to home screen"><button class="xx" aria-label="Dismiss">×</button><div id="a2hs-t"></div></div>
+<script>
+(function(){
+ try{
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  const key='a2hs_'+location.pathname;
+  if(standalone||localStorage.getItem(key))return;
+  const ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua), android=/Android/.test(ua);
+  if(!ios&&!android)return;
+  const el=document.getElementById('a2hs');
+  document.getElementById('a2hs-t').innerHTML=ios
+   ?'<b>📲 Save this app to your phone:</b> tap the <b>Share</b> button (square with an arrow) in Safari, then <b>“Add to Home Screen”</b>.'
+   :'<b>📲 Save this app to your phone:</b> tap the <b>⋮ menu</b> in Chrome, then <b>“Add to Home screen”</b> or <b>“Install app”</b>.';
+  setTimeout(()=>el.style.display='block',4000);
+  el.querySelector('.xx').onclick=()=>{el.style.display='none';try{localStorage.setItem(key,'1')}catch(e){}};
+ }catch(e){}
+})();
+</script>
+
+</body>
+</html>
