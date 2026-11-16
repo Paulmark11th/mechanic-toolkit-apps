@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CodeCheck Pro – Check Engine Code Lookup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1114;--panel:#171a1f;--panel2:#1e2228;--line:#2a2f37;--text:#e8eaed;--muted:#9aa1ab;
+  --accent:#ff7a1a;--accent2:#ffb27a;--ok:#3ecf8e;--warn:#f5b941;--bad:#ff5a5a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.logo{width:44px;height:44px;border-radius:10px;background:var(--accent);display:grid;place-items:center;flex:none}
+.logo svg{width:28px;height:28px}
+h1{font-family:"Barlow Condensed",sans-serif;font-size:28px;letter-spacing:.5px;margin:0;line-height:1}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.search{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.search label{font-size:13px;color:var(--muted);display:block;margin-bottom:8px}
+.row{display:flex;gap:8px}
+input[type=text]{flex:1;min-width:0;background:var(--bg);border:2px solid var(--line);color:var(--text);border-radius:10px;padding:14px;font-size:20px;font-family:"JetBrains Mono",monospace;letter-spacing:1px;outline:none}
+input[type=text]:focus{border-color:var(--accent)}
+input[type=text]::placeholder{color:#555c66;letter-spacing:0;font-family:Inter,sans-serif;font-size:16px}
+button{font-family:inherit;cursor:pointer}
+.go{background:var(--accent);color:#111;border:0;border-radius:10px;padding:0 20px;font-weight:700;font-size:16px}
+.go:hover{background:var(--accent2)}
+.hint{font-size:12.5px;color:var(--muted);margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:6px 12px;font-size:13px}
+.chip:hover,.chip.on{border-color:var(--accent);color:var(--accent2)}
+.recent{margin-top:12px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.recent button{background:none;border:1px dashed var(--line);color:var(--text);border-radius:6px;padding:2px 8px;font-family:"JetBrains Mono",monospace;font-size:12px}
+#out{margin-top:18px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card-h{padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+.code{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);font-weight:600}
+.title{font-size:18px;font-weight:600;margin-top:2px}
+.plain{color:var(--muted);font-size:14px;margin-top:6px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.badge{font-size:12.5px;font-weight:600;border-radius:6px;padding:4px 10px;display:inline-flex;gap:6px;align-items:center}
+.s1{background:rgba(62,207,142,.12);color:var(--ok)}
+.s2{background:rgba(245,185,65,.12);color:var(--warn)}
+.s3{background:rgba(255,90,90,.14);color:var(--bad)}
+.d{background:var(--panel2);color:var(--text)}
+.card-b{padding:4px 16px 16px}
+.sec h3{font-family:"Barlow Condensed",sans-serif;font-size:17px;letter-spacing:.6px;text-transform:uppercase;color:var(--accent2);margin:14px 0 6px}
+.sec ul,.sec ol{margin:0;padding-left:20px}
+.sec li{margin:3px 0}
+.parts{display:flex;flex-wrap:wrap;gap:6px}
+.part{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-size:13px}
+.note{margin-top:14px;background:rgba(255,122,26,.08);border-left:3px solid var(--accent);padding:10px 12px;border-radius:0 8px 8px 0;font-size:14px}
+.list .item{display:flex;gap:12px;align-items:baseline;padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+.list .item:last-child{border-bottom:0}
+.list .item:hover{background:var(--panel2)}
+.list .item .c{font-family:"JetBrains Mono",monospace;color:var(--accent);min-width:58px}
+.list .item .t{font-size:14.5px}
+.list-h{padding:12px 16px;border-bottom:1px solid var(--line);font-weight:600}
+.empty{color:var(--muted);text-align:center;padding:24px}
+.decode td{padding:4px 10px 4px 0;vertical-align:top;font-size:14px}
+.decode td:first-child{font-family:"JetBrains Mono",monospace;color:var(--accent);font-size:16px}
+.multi{background:var(--panel);border:1px solid var(--accent);border-radius:14px;padding:14px 16px;font-size:14px}
+.multi b{color:var(--accent2)}
+footer{margin-top:28px;font-size:12px;color:#6b727c;line-height:1.6}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h2l1-2h8l1 2h2v6h-2l-1 2H8l-1-2H5z"/><path d="M2 11v2M22 11v2M10 12h4"/></svg></div>
+    <div>
+      <h1>CODECHECK PRO</h1>
+      <div class="sub">Check engine code lookup · what it means, what to check, what to buy</div>
+    </div>
+  </header>
+
+  <div class="search">
+    <label for="q">Enter a code (e.g. P0420) or a word (e.g. misfire, oxygen, EVAP)</label>
+    <form class="row" id="f" autocomplete="off">
+      <input type="text" id="q" placeholder="P0300" autocapitalize="characters" spellcheck="false">
+      <button class="go" type="submit">Look up</button>
+    </form>
+    <div class="hint">Got several codes? Separate them with commas (P0171, P0300) and you'll get a fix-order tip.</div>
+    <div class="chips" id="chips"></div>
+    <div class="recent" id="recent"></div>
+  </div>
+
+  <div id="out"></div>
+
+  <footer>
+    <div class="legend">
+      <span class="badge s1">● Low urgency</span><span class="badge s2">● Fix soon</span><span class="badge s3">● Check right away</span>
+    </div>
+    <p>Code meanings follow the generic OBD-II standard (SAE J2012) used on most 1996+ US vehicles and 2001+/2004+ European petrol/diesel vehicles. Manufacturer-specific codes (P1xxx, many B/C/U codes) can mean different things on different brands, so confirm those in a factory service manual. Causes are listed from most to least common, but a code only points you to a system. Test before you replace parts. Never work on airbag (SRS) or high-voltage hybrid/EV systems without proper training.</p>
+  </footer>
+</div>
+
+<script>
+/* ---------- DATA ----------
+ Each: [code, title, plainEnglish, severity(1-3), difficulty(1-3), causes[], checks[], parts[], note?]
+*/
+const DIFF = {1:"Easy DIY",2:"Moderate DIY",3:"Pro / advanced"};
+const SEV  = {1:"Low urgency",2:"Fix soon",3:"Check right away"};
+const DB = {};
+const CAT = {};
+function E(code,title,plain,sev,diff,causes,checks,parts,note,cat){
+  DB[code]={code,title,plain,sev,diff,causes,checks,parts,note,cat};
+  (CAT[cat]=CAT[cat]||[]).push(code);
+}
+
+/* ---- Misfires ---- */
+E("P0300","Random/Multiple Cylinder Misfire Detected","The engine is misfiring on more than one cylinder, or the computer can't tell which one.",3,2,
+ ["Worn spark plugs","Failing ignition coil(s) or plug wires","Vacuum leak (cracked hose, intake gasket, PCV)","Low fuel pressure (weak pump, clogged filter)","Dirty or leaking fuel injectors","EGR valve stuck open","Bad fuel","Low compression (worn rings/valves, head gasket)"],
+ ["Look for other codes first (lean codes, specific cylinder misfires)","Check the misfire counters per cylinder on a scan tool","Pull and inspect spark plugs: wear, oil, carbon, wet fuel","Listen for vacuum hiss with the engine running; smoke test if needed","Test fuel pressure against spec","Compression test if plugs and coils check out"],
+ ["Spark plugs","Ignition coils / plug wires","Vacuum hoses","Fuel filter"],
+ "A FLASHING check engine light means an active severe misfire. Ease off, avoid hard acceleration and get it fixed: unburned fuel can overheat and destroy the catalytic converter.","Misfire");
+for(let n=1;n<=8;n++){
+ E("P030"+n,`Cylinder ${n} Misfire Detected`,`Cylinder ${n} isn't burning its fuel properly.`,3,2,
+ [`Worn or fouled spark plug (cyl ${n})`,`Failing ignition coil (cyl ${n})`,`Clogged or failed fuel injector (cyl ${n})`,`Vacuum leak near cylinder ${n}`,"Low compression (valve, ring or head gasket problem)"],
+ [`Swap the cyl ${n} coil with a neighbouring cylinder, clear codes, drive. If the misfire moves, the coil is bad`,`Pull the cyl ${n} plug: check gap, wear, oil or coolant fouling`,"If coil and plug are fine, swap the injector or listen to it with a stethoscope (should click)","Compression or leak-down test on that cylinder"],
+ ["Spark plug","Ignition coil","Fuel injector"],
+ "Flashing check engine light = severe misfire. Reduce driving to protect the catalytic converter. Coolant on the plug or white exhaust smoke can point to a head gasket.","Misfire");
+}
+
+/* ---- Fuel & air ---- */
+E("P0171","System Too Lean (Bank 1)","The engine is getting too much air or too little fuel on bank 1.",2,2,
+ ["Vacuum leak (cracked hose, intake boot, PCV hose, intake gasket)","Dirty or failing MAF sensor","Weak fuel pump or clogged fuel filter","Clogged fuel injectors","Exhaust leak before the front O2 sensor"],
+ ["Check long-term fuel trim (LTFT). Above about +10% confirms lean","Listen for hissing at idle; inspect the intake boot after the MAF","If trims improve at higher RPM it's likely a vacuum leak; if they get worse, think fuel delivery","Clean the MAF with MAF-specific cleaner","Smoke test the intake","Test fuel pressure"],
+ ["Vacuum hoses","Intake boot","PCV valve/hose","MAF cleaner","Fuel filter"],
+ "If both P0171 and P0174 are set, look for something shared by both banks: a big vacuum leak, the MAF, or fuel pressure.","Fuel & Air");
+E("P0174","System Too Lean (Bank 2)","The engine is getting too much air or too little fuel on bank 2.",2,2,
+ ["Vacuum leak","Dirty or failing MAF sensor","Low fuel pressure","Clogged injectors on bank 2","Exhaust leak before the bank 2 O2 sensor"],
+ ["Check bank 2 fuel trims","Inspect hoses and intake gasket on the bank 2 side","Clean the MAF","Smoke test","Fuel pressure test"],
+ ["Vacuum hoses","Intake gasket","MAF cleaner","Fuel filter"],
+ "Bank 2 is the side of a V engine that does NOT have cylinder 1.","Fuel & Air");
+E("P0172","System Too Rich (Bank 1)","The engine is getting too much fuel or too little air on bank 1.",2,2,
+ ["Leaking fuel injector","Fuel pressure too high (bad regulator)","Dirty MAF sensor misreading","Clogged engine air filter","Coolant temp sensor stuck reading cold","Fuel-diluted engine oil (purge or PCV issues)"],
+ ["Check fuel trims (strongly negative LTFT confirms rich)","Inspect the air filter","Clean the MAF","Check the coolant temp reading on a cold engine against the ambient temperature","Fuel pressure and leak-down test","Smell the oil for fuel"],
+ ["Air filter","MAF cleaner","Fuel pressure regulator","Injectors"],null,"Fuel & Air");
+E("P0175","System Too Rich (Bank 2)","The engine is getting too much fuel or too little air on bank 2.",2,2,
+ ["Leaking injector on bank 2","High fuel pressure","Dirty MAF","Clogged air filter","Faulty coolant temp sensor"],
+ ["Check bank 2 fuel trims","Inspect the air filter and MAF","Fuel pressure test","Check the coolant temp sensor reading"],
+ ["Air filter","MAF cleaner","Injectors"],null,"Fuel & Air");
+E("P2187","System Too Lean at Idle (Bank 1)","Lean only at idle. Almost always a vacuum leak.",1,2,
+ ["Vacuum leak (PCV valve/hose very common)","Intake manifold gasket","Cracked intake boot","Dirty MAF"],
+ ["Smoke test the intake","Check the PCV valve and hoses","Watch trims: lean at idle that improves at 2,500 RPM = vacuum leak"],
+ ["PCV valve","Vacuum hoses","Intake gasket"],null,"Fuel & Air");
+E("P2189","System Too Lean at Idle (Bank 2)","Lean only at idle on bank 2. Usually a vacuum leak.",1,2,
+ ["Vacuum leak","PCV system leak","Intake gasket on bank 2"],
+ ["Smoke test","Inspect the PCV system","Compare bank 1 vs bank 2 trims"],
+ ["PCV valve","Vacuum hoses","Intake gasket"],null,"Fuel & Air");
+E("P0087","Fuel Rail/System Pressure – Too Low","The fuel system can't build enough pressure.",2,3,
+ ["Weak fuel pump","Clogged fuel filter","Faulty pressure regulator","Failing high-pressure pump (direct-injection and diesel engines)","Fuel rail pressure sensor fault"],
+ ["Compare actual vs desired fuel pressure on a scan tool","Mechanical fuel pressure test on the low-pressure side","Check the fuel pump relay and voltage at the pump","Replace the fuel filter if it's serviceable"],
+ ["Fuel filter","Fuel pump","High-pressure pump"],
+ "Low fuel pressure can cause hesitation, stalling or no-start. Fuel systems are under pressure. Relieve the pressure first and keep sparks away.","Fuel & Air");
+E("P0191","Fuel Rail Pressure Sensor Circuit Range/Performance","The fuel pressure sensor reading doesn't make sense.",2,3,
+ ["Faulty fuel rail pressure sensor","Wiring or connector problem","Actual fuel pressure problem (pump, regulator)"],
+ ["Compare sensor reading with a mechanical gauge","Inspect connector and wiring","Check the 5V reference and ground at the sensor"],
+ ["Fuel rail pressure sensor"],null,"Fuel & Air");
+E("P0101","Mass Air Flow (MAF) Circuit Range/Performance","The airflow reading doesn't match what the engine should be breathing.",1,1,
+ ["Dirty MAF sensor","Air leak between the MAF and the throttle body","Clogged air filter","Vacuum leak","Failing MAF sensor"],
+ ["Inspect the air filter and the intake boot for cracks","Clean the MAF with MAF-specific cleaner (never touch the wires)","Compare live MAF g/s with the manufacturer's spec at idle and 2,500 RPM"],
+ ["MAF cleaner","Air filter","Intake boot","MAF sensor"],null,"Fuel & Air");
+E("P0102","Mass Air Flow Circuit Low Input","The MAF signal voltage is too low.",2,1,
+ ["MAF unplugged or loose connector","Damaged wiring","Failed MAF sensor","Big air leak after the MAF"],
+ ["Make sure the MAF is plugged in (common after an air filter change)","Inspect the connector for corrosion or bent pins","Check power and ground at the MAF"],
+ ["MAF sensor","Connector pigtail"],null,"Fuel & Air");
+E("P0103","Mass Air Flow Circuit High Input","The MAF signal voltage is too high.",2,2,
+ ["Failed MAF sensor","Signal wire shorted to voltage","Aftermarket oiled air filter contaminating the sensor"],
+ ["Inspect the wiring for chafing","Check the signal voltage with key on, engine off","Clean or replace the MAF"],
+ ["MAF sensor"],null,"Fuel & Air");
+E("P0106","MAP/Barometric Pressure Circuit Range/Performance","The intake manifold pressure reading doesn't make sense.",1,2,
+ ["Cracked or disconnected vacuum hose to the MAP sensor","Faulty MAP sensor","Vacuum leak","Engine mechanical issue (low vacuum)"],
+ ["Inspect the MAP sensor hose","Key on, engine off: MAP should read roughly the same as barometric pressure","Check engine vacuum with a gauge"],
+ ["MAP sensor","Vacuum hose"],null,"Fuel & Air");
+E("P0107","MAP/Barometric Pressure Circuit Low Input","The MAP sensor signal is too low.",2,1,
+ ["Sensor unplugged","Open signal wire or lost 5V reference","Failed MAP sensor"],
+ ["Check the connector","Check the 5V reference, ground and signal at the sensor"],
+ ["MAP sensor"],null,"Fuel & Air");
+E("P0108","MAP/Barometric Pressure Circuit High Input","The MAP sensor signal is too high.",2,1,
+ ["Failed MAP sensor","Signal shorted to voltage","Vacuum hose to sensor disconnected"],
+ ["Check the vacuum hose","Check the wiring and the sensor output"],
+ ["MAP sensor","Vacuum hose"],null,"Fuel & Air");
+E("P0505","Idle Air Control (IAC) System","The computer can't control the idle speed properly.",1,1,
+ ["Dirty throttle body / carbon in the IAC passage","Faulty IAC valve","Vacuum leak"],
+ ["Clean the throttle body and IAC passage","Check for vacuum leaks","Run an idle relearn procedure after cleaning (varies by vehicle)"],
+ ["Throttle body cleaner","IAC valve"],null,"Fuel & Air");
+E("P0506","Idle Control System RPM Lower Than Expected","The idle is lower than the computer wants.",1,1,
+ ["Dirty throttle body","Sticking IAC valve","Restricted air intake","Engine load (A/C, alternator) issue"],
+ ["Clean the throttle body","Check the air filter","Do an idle relearn"],
+ ["Throttle body cleaner"],null,"Fuel & Air");
+E("P0507","Idle Control System RPM Higher Than Expected","The idle is higher than the computer wants.",1,2,
+ ["Vacuum leak","IAC valve stuck open","Dirty or sticking throttle body","PCV valve stuck open"],
+ ["Smoke test for vacuum leaks","Clean the throttle body","Check the PCV valve","Do an idle relearn"],
+ ["PCV valve","Vacuum hoses","Throttle body cleaner"],null,"Fuel & Air");
+E("P0234","Turbocharger/Supercharger 'A' Overboost Condition","The turbo is making more boost than allowed.",2,3,
+ ["Wastegate stuck closed","Faulty boost control solenoid","Cracked or disconnected wastegate vacuum line","Boost sensor fault"],
+ ["Inspect wastegate actuator movement and vacuum lines","Test the boost control solenoid","Compare actual vs desired boost"],
+ ["Boost control solenoid","Vacuum lines","Wastegate actuator"],
+ "Overboost can damage the engine. Drive gently until fixed.","Fuel & Air");
+E("P0299","Turbocharger/Supercharger 'A' Underboost","The turbo isn't making enough boost.",2,2,
+ ["Boost leak (split intercooler hose, loose clamp)","Wastegate stuck open","Faulty diverter/bypass valve","Clogged air filter","Worn turbo"],
+ ["Inspect all intercooler hoses and clamps","Boost leak test (pressurise the intake)","Check the wastegate and diverter valve","Check turbo shaft play and oil leaks"],
+ ["Intercooler hose","Clamps","Diverter valve","Wastegate actuator"],null,"Fuel & Air");
+for(let n=1;n<=8;n++){
+ E("P020"+n,`Injector Circuit/Open – Cylinder ${n}`,`The computer sees an electrical problem with the cylinder ${n} injector circuit.`,2,2,
+ [`Failed injector coil (cyl ${n})`,"Damaged wiring or connector","Engine computer driver fault (rare)"],
+ ["Inspect the injector connector","Measure injector resistance and compare to spec (many high-impedance injectors read about 12–16 Ω)","Check for 12V supply at the connector with the key on","Use a noid light to confirm the computer is pulsing the injector"],
+ ["Fuel injector","Injector connector pigtail"],"Will usually cause a misfire on the same cylinder.","Fuel & Air");
+}
+
+/* ---- Ignition & timing ---- */
+"ABCDEFGH".split("").forEach((L,i)=>{
+ const code="P035"+(i+1);
+ E(code,`Ignition Coil '${L}' Primary/Secondary Circuit`,`Electrical problem with ignition coil ${L} (normally cylinder ${i+1}).`,2,1,
+ [`Failed ignition coil (cyl ${i+1})`,"Damaged connector or wiring","Engine computer coil driver fault (rare)"],
+ ["Inspect the coil connector for corrosion or a broken lock tab","Swap the coil with another cylinder and see if the code follows","Check for 12V supply and the trigger signal at the coil"],
+ ["Ignition coil","Coil connector"],null,"Ignition & Timing");
+});
+E("P0010","'A' Camshaft Position Actuator Circuit (Bank 1)","Electrical problem with the bank 1 intake variable valve timing (VVT) solenoid.",2,2,
+ ["Faulty VVT oil control solenoid","Damaged wiring or connector","Engine computer driver fault"],
+ ["Inspect the VVT solenoid connector","Measure solenoid resistance against spec","Command the solenoid on/off with a bidirectional scan tool"],
+ ["VVT solenoid"],null,"Ignition & Timing");
+E("P0011","'A' Camshaft Position – Timing Over-Advanced (Bank 1)","Bank 1 intake cam timing is more advanced than the computer commanded.",2,2,
+ ["Low or dirty engine oil","Wrong oil viscosity","Sticking VVT oil control solenoid (screen clogged)","Faulty cam phaser","Stretched timing chain"],
+ ["Check oil level and condition FIRST","Change the oil and filter with the correct grade","Remove and inspect the VVT solenoid and its screen","Check cam/crank correlation on a scan tool"],
+ ["Engine oil & filter","VVT solenoid","Cam phaser"],
+ "Many P0011/P0012/P0014 codes are fixed with an oil change plus a VVT solenoid clean. Start there.","Ignition & Timing");
+E("P0012","'A' Camshaft Position – Timing Over-Retarded (Bank 1)","Bank 1 intake cam timing is more retarded than commanded.",2,2,
+ ["Low or dirty oil","VVT solenoid stuck","Cam phaser stuck","Timing chain stretch"],
+ ["Check oil level and condition","Oil change with the correct grade","Inspect and test the VVT solenoid","Check timing chain stretch"],
+ ["Engine oil & filter","VVT solenoid","Cam phaser"],null,"Ignition & Timing");
+E("P0014","'B' Camshaft Position – Timing Over-Advanced (Bank 1)","Bank 1 'B' cam (usually exhaust) timing is too advanced.",2,2,
+ ["Low or dirty oil","Faulty exhaust VVT solenoid","Stuck cam phaser","Timing chain stretch"],
+ ["Check oil level and condition","Inspect and test the exhaust VVT solenoid","Check cam/crank correlation"],
+ ["Engine oil & filter","VVT solenoid"],null,"Ignition & Timing");
+E("P0016","Crankshaft/Camshaft Position Correlation (Bank 1 Sensor A)","The crankshaft and camshaft aren't lined up the way the computer expects.",3,3,
+ ["Stretched or jumped timing chain/belt","Faulty cam phaser or VVT solenoid","Low/dirty oil","Faulty crank or cam sensor","Damaged reluctor (tone) ring"],
+ ["Check oil level and condition","Check for timing chain rattle on start-up","Compare cam/crank correlation values on a scan tool","Verify mechanical timing marks"],
+ ["Timing chain kit","VVT solenoid","Cam/crank sensor"],
+ "If the timing has jumped, the engine can be damaged (valves hitting pistons on interference engines). Don't ignore this one.","Ignition & Timing");
+E("P0017","Crankshaft/Camshaft Position Correlation (Bank 1 Sensor B)","The crankshaft and exhaust camshaft aren't lined up as expected.",3,3,
+ ["Timing chain stretched or jumped","Faulty exhaust cam phaser","Faulty cam sensor B","Low/dirty oil"],
+ ["Check the oil","Check correlation values","Verify mechanical timing"],
+ ["Timing chain kit","Cam sensor","VVT solenoid"],null,"Ignition & Timing");
+E("P0335","Crankshaft Position Sensor 'A' Circuit","No usable signal from the crankshaft position sensor.",3,2,
+ ["Failed crank sensor","Damaged wiring or connector","Damaged reluctor ring","Sensor gap/debris"],
+ ["Check whether there is an RPM signal while cranking","Inspect the connector and wiring near the exhaust","Measure sensor resistance or check the signal with a scope/multimeter"],
+ ["Crankshaft position sensor"],
+ "Common symptom: engine cranks but won't start, or stalls while driving and then restarts after cooling down.","Ignition & Timing");
+E("P0336","Crankshaft Position Sensor 'A' Range/Performance","The crank sensor signal is erratic.",3,2,
+ ["Failing crank sensor","Metal debris on the sensor tip","Damaged reluctor ring","Wiring interference"],
+ ["Remove and clean the sensor tip","Inspect the wiring routing","Check the reluctor ring for damage"],
+ ["Crankshaft position sensor"],null,"Ignition & Timing");
+E("P0340","Camshaft Position Sensor 'A' Circuit (Bank 1)","No usable signal from the camshaft position sensor.",2,2,
+ ["Failed cam sensor","Wiring or connector problem","Timing chain/belt problem"],
+ ["Inspect the connector","Check the 5V/12V supply, ground and signal","Check timing if the sensor tests good"],
+ ["Camshaft position sensor"],null,"Ignition & Timing");
+E("P0341","Camshaft Position Sensor 'A' Range/Performance","The cam sensor signal is erratic or out of sync.",2,2,
+ ["Failing cam sensor","Timing chain stretch","Wiring interference"],
+ ["Swap or test the sensor","Check cam/crank correlation","Inspect wiring"],
+ ["Camshaft position sensor"],null,"Ignition & Timing");
+E("P0320","Ignition/Distributor Engine Speed Input Circuit","The computer lost the engine speed signal.",3,2,
+ ["Faulty crank/distributor pickup sensor","Wiring problem","Bad ground"],
+ ["Check the RPM signal while cranking","Inspect the wiring and grounds"],
+ ["Crank sensor / distributor pickup"],null,"Ignition & Timing");
+E("P0325","Knock Sensor 1 Circuit (Bank 1)","Electrical problem with the knock sensor.",1,2,
+ ["Failed knock sensor","Damaged wiring (often under the intake manifold)","Corroded connector"],
+ ["Inspect the connector and wiring","Measure sensor resistance against spec","Check that the sensor is torqued correctly"],
+ ["Knock sensor","Knock sensor harness"],
+ "Knock sensors are often under the intake manifold. Budget the extra labour.","Ignition & Timing");
+E("P0327","Knock Sensor 1 Circuit Low (Bank 1)","The knock sensor signal is too low.",1,2,
+ ["Failed sensor","Open or shorted wiring","Loose sensor (wrong torque)"],
+ ["Check the wiring","Test the sensor","Check the mounting torque"],
+ ["Knock sensor"],null,"Ignition & Timing");
+E("P0328","Knock Sensor 1 Circuit High (Bank 1)","The knock sensor signal is too high.",1,2,
+ ["Failed sensor","Wiring shorted to voltage","Real engine knock or mechanical noise"],
+ ["Check the wiring","Listen for engine mechanical noise","Test the sensor"],
+ ["Knock sensor"],null,"Ignition & Timing");
+
+/* ---- O2 sensors & catalyst ---- */
+const o2Groups=[[130,"Bank 1 Sensor 1","upstream (before the catalytic converter) on bank 1"],[136,"Bank 1 Sensor 2","downstream (after the catalytic converter) on bank 1"],[150,"Bank 2 Sensor 1","upstream on bank 2"],[156,"Bank 2 Sensor 2","downstream on bank 2"]];
+o2Groups.forEach(([b,loc,desc])=>{
+ const up = loc.endsWith("1");
+ const C=n=>"P0"+(b+n);
+ E(C(0),`O2 Sensor Circuit Malfunction (${loc})`,`Problem with the oxygen sensor ${desc}.`,1,1,
+  ["Failed O2 sensor","Wiring or connector damage (exhaust heat)","Exhaust leak near the sensor"],
+  ["Inspect wiring for melted or chafed spots","Check sensor voltage switching on a scan tool","Check for exhaust leaks"],["O2 sensor","O2 sensor socket"],null,"O2 & Catalyst");
+ E(C(1),`O2 Sensor Circuit Low Voltage (${loc})`,`The oxygen sensor ${desc} is reading low (lean) for too long.`,1,1,
+  ["Failed O2 sensor","Exhaust leak before the sensor (pulls in air)","Signal wire shorted to ground",up?"Actual lean condition (vacuum leak)":"Failing catalytic converter or exhaust leak"],
+  ["Check for exhaust leaks","Watch sensor voltage on a scan tool","Check fuel trims for a real lean condition"],["O2 sensor"],null,"O2 & Catalyst");
+ E(C(2),`O2 Sensor Circuit High Voltage (${loc})`,`The oxygen sensor ${desc} is reading high (rich) for too long.`,1,1,
+  ["Failed O2 sensor","Signal wire shorted to voltage","Actual rich condition (leaking injector, high fuel pressure)","Sensor contaminated (coolant/oil burning)"],
+  ["Inspect the wiring","Check fuel trims","Check for coolant loss or oil burning"],["O2 sensor"],null,"O2 & Catalyst");
+ E(C(3),`O2 Sensor Circuit Slow Response (${loc})`,`The oxygen sensor ${desc} is switching too slowly. Usually it's just old.`,1,1,
+  ["Aged/contaminated O2 sensor","Exhaust leak","Wiring issue"],
+  ["Watch the sensor on a scan tool: a healthy upstream sensor switches quickly between about 0.1 and 0.9 V","Check for exhaust leaks"],["O2 sensor"],null,"O2 & Catalyst");
+ E(C(4),`O2 Sensor Circuit No Activity Detected (${loc})`,`The oxygen sensor ${desc} isn't sending any changing signal.`,1,1,
+  ["Dead O2 sensor","Open wiring","Failed heater (sensor never warms up)"],
+  ["Check sensor voltage: stuck around 0.45 V usually means no activity","Check heater circuit and fuse","Inspect the wiring"],["O2 sensor"],null,"O2 & Catalyst");
+ E(C(5),`O2 Sensor Heater Circuit (${loc})`,`The heater inside the oxygen sensor ${desc} isn't working.`,1,1,
+  ["Failed O2 sensor heater (most common)","Blown heater fuse","Wiring or connector damage"],
+  ["Check the O2 heater fuse","Measure heater resistance at the sensor (usually a few ohms)","Check for 12V at the heater feed with key on"],["O2 sensor","Fuse"],
+  "Most heater codes are fixed by replacing the sensor itself. Check the fuse first because it's free.","O2 & Catalyst");
+});
+[["P0030","Bank 1 Sensor 1"],["P0036","Bank 1 Sensor 2"],["P0050","Bank 2 Sensor 1"],["P0056","Bank 2 Sensor 2"]].forEach(([c,loc])=>{
+ E(c,`HO2S Heater Control Circuit (${loc})`,`Problem with the heater control circuit for the ${loc} oxygen sensor.`,1,1,
+ ["Failed O2 sensor heater","Blown fuse","Damaged wiring/connector"],
+ ["Check the fuse","Measure heater resistance","Inspect the wiring near the exhaust"],["O2 sensor","Fuse"],null,"O2 & Catalyst");
+});
+E("P2195","O2 Sensor Signal Biased/Stuck Lean (Bank 1 Sensor 1)","The upstream O2 sensor is stuck reporting lean.",1,2,
+ ["Failing upstream O2 / air-fuel sensor","Vacuum leak","Exhaust leak before the sensor","Low fuel pressure"],
+ ["Check fuel trims","Check for exhaust and vacuum leaks","Test the sensor's response by adding propane or snapping the throttle"],["O2 / air-fuel sensor"],null,"O2 & Catalyst");
+E("P2196","O2 Sensor Signal Biased/Stuck Rich (Bank 1 Sensor 1)","The upstream O2 sensor is stuck reporting rich.",1,2,
+ ["Failing upstream O2 / air-fuel sensor","Leaking injector","High fuel pressure","Sensor contamination"],
+ ["Check fuel trims","Test the sensor","Check fuel pressure"],["O2 / air-fuel sensor"],null,"O2 & Catalyst");
+E("P2270","O2 Sensor Signal Biased/Stuck Lean (Bank 1 Sensor 2)","The downstream O2 sensor is stuck reporting lean.",1,1,
+ ["Exhaust leak near the downstream sensor","Failing downstream O2 sensor","Lean condition"],
+ ["Check for exhaust leaks around the cat and sensor","Watch the sensor during a snap-throttle (it should go rich/high)"],["O2 sensor","Exhaust gasket"],null,"O2 & Catalyst");
+E("P2271","O2 Sensor Signal Biased/Stuck Rich (Bank 1 Sensor 2)","The downstream O2 sensor is stuck reporting rich.",1,1,
+ ["Failing downstream O2 sensor","Rich running condition","Sensor contamination"],
+ ["Check fuel trims","Test the sensor"],["O2 sensor"],null,"O2 & Catalyst");
+E("P2A00","O2 Sensor Circuit Range/Performance (Bank 1 Sensor 1)","The upstream O2 / air-fuel sensor reading doesn't make sense.",1,1,
+ ["Aged O2 / air-fuel sensor","Exhaust leak","Fuel trim problem"],
+ ["Check for exhaust leaks","Check fuel trims","Replace the sensor if it's original and high mileage"],["O2 / air-fuel sensor"],null,"O2 & Catalyst");
+E("P2096","Post Catalyst Fuel Trim System Too Lean (Bank 1)","The sensor after the cat sees lean exhaust.",1,2,
+ ["Exhaust leak near the downstream sensor","Faulty upstream or downstream O2 sensor","Vacuum leak","Weak catalytic converter"],
+ ["Check for exhaust leaks","Check upstream sensor and fuel trims","Fix any lean codes first"],["O2 sensor","Exhaust gasket"],null,"O2 & Catalyst");
+E("P2097","Post Catalyst Fuel Trim System Too Rich (Bank 1)","The sensor after the cat sees rich exhaust.",1,2,
+ ["Faulty upstream O2 sensor","Rich running (leaky injector, high fuel pressure)","Failing catalytic converter"],
+ ["Check fuel trims","Test the upstream sensor","Fix any rich or misfire codes first"],["O2 sensor"],null,"O2 & Catalyst");
+E("P0420","Catalyst System Efficiency Below Threshold (Bank 1)","The catalytic converter on bank 1 isn't cleaning the exhaust well enough.",1,2,
+ ["Worn-out catalytic converter","Exhaust leak near the O2 sensors","Faulty upstream or downstream O2 sensor","Engine problems that damaged the cat (misfires, running rich, burning oil/coolant)"],
+ ["Fix ANY misfire, rich or lean codes first","Check for exhaust leaks","Compare upstream vs downstream O2 signals. The downstream should be fairly steady; if it mirrors the upstream, the cat is weak","Replace the downstream O2 sensor only if it tests bad"],
+ ["Catalytic converter","O2 sensor","Exhaust gaskets"],
+ "Don't sell a customer a catalytic converter before fixing the reason it failed, or the new one will fail too. Use a legal, emissions-compliant converter for the vehicle and region.","O2 & Catalyst");
+E("P0430","Catalyst System Efficiency Below Threshold (Bank 2)","The catalytic converter on bank 2 isn't cleaning the exhaust well enough.",1,2,
+ ["Worn-out bank 2 catalytic converter","Exhaust leak","Faulty bank 2 O2 sensor","Engine problems that damaged the cat"],
+ ["Fix misfire and fuel trim codes first","Check for exhaust leaks","Compare upstream vs downstream O2 signals on bank 2"],
+ ["Catalytic converter","O2 sensor"],
+ "Fix the root cause before replacing the converter.","O2 & Catalyst");
+
+/* ---- EVAP & emissions ---- */
+E("P0440","Evaporative Emission (EVAP) System Malfunction","General fault in the system that traps fuel vapours.",1,1,
+ ["Loose or damaged gas cap","EVAP hose leak","Faulty purge or vent valve","Cracked charcoal canister"],
+ ["Check and tighten the gas cap (click it)","Inspect EVAP hoses","Smoke test the EVAP system"],
+ ["Gas cap","EVAP hoses","Purge valve","Vent valve"],null,"EVAP & Emissions");
+E("P0441","EVAP System Incorrect Purge Flow","The computer isn't seeing the purge flow it expects.",1,2,
+ ["Faulty purge valve","Cracked or blocked purge hose","Vacuum supply issue","Clogged canister"],
+ ["Command the purge valve and check for vacuum","Inspect the purge hoses","Test the purge valve: it should hold vacuum when off"],
+ ["Purge valve","EVAP hoses"],null,"EVAP & Emissions");
+E("P0442","EVAP System Leak Detected (Small Leak)","There's a small leak in the fuel vapour system.",1,1,
+ ["Worn gas cap seal","Cracked EVAP hose","Leaking purge or vent valve","Cracked charcoal canister","Filler neck seal"],
+ ["Inspect and replace the gas cap if the seal is cracked (cheapest fix)","Smoke test the EVAP system","Inspect the hoses near the tank and canister"],
+ ["Gas cap","EVAP hoses","Vent valve","Purge valve"],null,"EVAP & Emissions");
+E("P0443","EVAP Purge Control Valve Circuit","Electrical problem with the purge valve.",1,1,
+ ["Failed purge valve","Damaged wiring/connector","Blown fuse"],
+ ["Check the connector","Measure purge valve resistance","Check power and the computer's ground control"],
+ ["Purge valve"],null,"EVAP & Emissions");
+E("P0446","EVAP Vent Control Circuit","Problem with the EVAP vent valve circuit or its operation.",1,2,
+ ["Stuck or failed vent valve","Vent filter/valve clogged with dirt or insects","Damaged wiring","Saturated charcoal canister (overfilling the tank)"],
+ ["Inspect the vent valve near the canister (often under the car)","Check for debris in the vent filter","Test the valve operation","Avoid topping off after the pump clicks"],
+ ["Vent valve","Charcoal canister"],null,"EVAP & Emissions");
+E("P0449","EVAP Vent Valve/Solenoid Circuit","Electrical fault in the vent valve circuit.",1,1,
+ ["Failed vent solenoid","Wiring/connector corrosion (road exposure)"],
+ ["Inspect the connector","Test the solenoid resistance and power feed"],
+ ["Vent valve"],null,"EVAP & Emissions");
+E("P0451","EVAP Pressure Sensor Range/Performance","The fuel tank pressure sensor reading doesn't make sense.",1,2,
+ ["Faulty fuel tank pressure sensor","Wiring","Gas cap issue"],
+ ["Check the sensor reading with the cap off (should be near zero)","Inspect the wiring"],
+ ["Fuel tank pressure sensor"],null,"EVAP & Emissions");
+E("P0455","EVAP System Leak Detected (Large Leak)","There's a big leak in the fuel vapour system.",1,1,
+ ["Gas cap missing, loose or wrong","Disconnected or split EVAP hose","Purge valve stuck open","Vent valve stuck open"],
+ ["Check the gas cap first","Look for disconnected hoses at the canister and purge valve","Smoke test"],
+ ["Gas cap","EVAP hoses","Purge valve"],null,"EVAP & Emissions");
+E("P0456","EVAP System Leak Detected (Very Small Leak)","There's a tiny leak in the fuel vapour system.",1,2,
+ ["Gas cap seal","Tiny hose crack","Leaking purge/vent valve seal"],
+ ["Replace the gas cap if old","Smoke test (these leaks can be hard to see)"],
+ ["Gas cap","EVAP hoses"],null,"EVAP & Emissions");
+E("P0457","EVAP System Leak Detected (Fuel Cap Loose/Off)","The gas cap is loose or missing.",1,1,
+ ["Gas cap not tightened","Damaged cap seal","Wrong aftermarket cap"],
+ ["Tighten the cap until it clicks","Replace the cap if the seal is damaged","The code clears itself after several drive cycles"],
+ ["Gas cap"],null,"EVAP & Emissions");
+E("P0496","EVAP High Purge Flow","Too much fuel vapour is getting into the engine.",1,2,
+ ["Purge valve stuck open"],
+ ["With the engine off, blow through the purge valve: it should be closed","Look for hard starting right after refuelling (classic symptom)"],
+ ["Purge valve"],null,"EVAP & Emissions");
+E("P0497","EVAP Low Purge Flow","Not enough purge flow.",1,2,
+ ["Faulty purge valve","Blocked purge line","Clogged canister"],
+ ["Test the purge valve","Inspect the lines"],["Purge valve","Charcoal canister"],null,"EVAP & Emissions");
+E("P0400","Exhaust Gas Recirculation (EGR) Flow","General fault in EGR flow.",1,2,
+ ["Clogged EGR passages (carbon)","Faulty EGR valve","EGR position/pressure sensor fault","Vacuum supply problem"],
+ ["Inspect and clean the EGR valve and passages","Command the EGR valve open at idle: the engine should stumble","Check vacuum lines (vacuum-operated valves)"],
+ ["EGR valve","EGR gasket","Carbon cleaner"],null,"EVAP & Emissions");
+E("P0401","EGR Flow Insufficient Detected","Not enough exhaust gas is flowing back through the EGR system.",1,2,
+ ["Carbon-clogged EGR passages","Stuck EGR valve","Faulty DPFE / EGR pressure sensor (common on Ford)","Cracked vacuum hose"],
+ ["Remove and clean the EGR valve and ports","Command the EGR open: RPM should drop","Check the DPFE sensor hoses (if equipped)"],
+ ["EGR valve","DPFE sensor","EGR gasket"],null,"EVAP & Emissions");
+E("P0402","EGR Flow Excessive Detected","Too much exhaust gas is flowing through the EGR.",2,2,
+ ["EGR valve stuck open (carbon)","Faulty EGR control solenoid","Faulty EGR sensor"],
+ ["Check for rough idle or stalling (classic symptom)","Inspect and clean the EGR valve","Test the control solenoid"],
+ ["EGR valve"],null,"EVAP & Emissions");
+E("P0403","EGR Control Circuit","Electrical problem with the EGR valve circuit.",1,1,
+ ["Failed EGR solenoid/valve","Wiring/connector issue"],
+ ["Inspect the connector","Test the EGR solenoid resistance"],["EGR valve / solenoid"],null,"EVAP & Emissions");
+E("P0404","EGR Control Circuit Range/Performance","The EGR valve isn't moving where it's told to.",1,2,
+ ["Sticking EGR valve (carbon)","Faulty position sensor","Wiring"],
+ ["Clean the EGR valve","Compare commanded vs actual position on a scan tool"],["EGR valve"],null,"EVAP & Emissions");
+E("P0410","Secondary Air Injection System","Fault in the air pump system that helps the cat warm up.",1,2,
+ ["Failed air pump (often from water damage)","Stuck check valve","Blown fuse or relay","Cracked hoses"],
+ ["Check the fuse and relay","Listen for the pump on a cold start (it runs for about 30–90 seconds)","Inspect the check valve for exhaust/moisture"],
+ ["Air pump","Check valve","Relay"],null,"EVAP & Emissions");
+E("P0411","Secondary Air Injection System Incorrect Flow Detected","The air pump isn't flowing as expected.",1,2,
+ ["Weak air pump","Stuck check/switching valve","Leaking hoses"],
+ ["Cold start test: listen for the pump","Inspect the valves and hoses"],["Air pump","Check valve"],null,"EVAP & Emissions");
+E("P0491","Secondary Air Injection System Insufficient Flow (Bank 1)","Not enough air flow from the air pump on bank 1.",1,2,
+ ["Weak air pump","Clogged air injection ports (carbon)","Stuck valve"],
+ ["Check pump operation","Inspect the combi/check valve","Check the ports for carbon"],["Air pump","Combi valve"],null,"EVAP & Emissions");
+
+/* ---- Sensors & cooling ---- */
+E("P0110","Intake Air Temperature Sensor Circuit","Problem with the intake air temp sensor circuit.",1,1,
+ ["Sensor unplugged","Failed IAT sensor","Wiring"],
+ ["Check the connector (often built into the MAF)","Compare the IAT reading with the outside temp on a cold engine"],["IAT sensor"],null,"Sensors & Cooling");
+E("P0112","Intake Air Temperature Sensor Circuit Low","The IAT reads abnormally hot. Usually a shorted sensor or wiring.",1,1,
+ ["Shorted IAT sensor","Signal wire shorted to ground"],
+ ["Unplug the sensor: if the reading drops to very cold, the sensor is shorted","Inspect the wiring"],["IAT sensor"],null,"Sensors & Cooling");
+E("P0113","Intake Air Temperature Sensor Circuit High","The IAT reads abnormally cold. Usually unplugged or an open circuit.",1,1,
+ ["Sensor/MAF unplugged (common after an air filter change)","Open wiring","Failed sensor"],
+ ["Check the connector","Check for 5V reference at the sensor","Measure sensor resistance against the temp chart"],["IAT sensor"],null,"Sensors & Cooling");
+E("P0115","Engine Coolant Temperature Sensor Circuit","Problem with the coolant temp sensor circuit.",2,1,
+ ["Failed ECT sensor","Wiring/connector issue"],
+ ["Inspect the connector","Compare the ECT reading with the IAT on a cold engine (should be close)"],["Coolant temp sensor"],null,"Sensors & Cooling");
+E("P0116","Engine Coolant Temperature Sensor Range/Performance","The coolant temp reading doesn't make sense.",1,1,
+ ["Thermostat stuck open","Sensor reading off (drifted)","Low coolant"],
+ ["Check the coolant level","Watch the ECT warm up on a scan tool: should rise steadily to about 85–105°C (185–220°F)","Compare with an infrared thermometer"],["Thermostat","Coolant temp sensor"],null,"Sensors & Cooling");
+E("P0117","Engine Coolant Temperature Sensor Circuit Low","The coolant sensor reads abnormally hot. Usually shorted.",2,1,
+ ["Shorted ECT sensor","Signal wire shorted to ground"],
+ ["Unplug the sensor: the reading should drop to very cold","Inspect the wiring"],["Coolant temp sensor"],
+ "Can make the cooling fans run constantly and cause hard starting.","Sensors & Cooling");
+E("P0118","Engine Coolant Temperature Sensor Circuit High","The coolant sensor reads abnormally cold. Usually unplugged or open.",2,1,
+ ["Sensor unplugged or connector corroded","Open wiring","Failed sensor"],
+ ["Check the connector","Measure sensor resistance","Check for 5V reference"],["Coolant temp sensor"],
+ "Can cause rich running, poor fuel economy and fans not working properly.","Sensors & Cooling");
+E("P0125","Insufficient Coolant Temperature for Closed Loop Fuel Control","The engine is taking too long to warm up.",1,1,
+ ["Thermostat stuck open","Low coolant","Faulty ECT sensor"],
+ ["Check the coolant level","Check the warm-up time on a scan tool","Feel the upper radiator hose: it should stay cool until the thermostat opens"],["Thermostat","Coolant temp sensor"],null,"Sensors & Cooling");
+E("P0128","Coolant Thermostat (Coolant Temp Below Regulating Temperature)","The engine isn't reaching normal temperature. Almost always the thermostat.",1,2,
+ ["Thermostat stuck open (most common)","Faulty coolant temp sensor","Low coolant","Cooling fan running constantly"],
+ ["Watch coolant temp warm-up: if it stays low on the highway, the thermostat is open","Check the coolant level","Check that the fans aren't running all the time"],
+ ["Thermostat","Thermostat gasket","Coolant"],
+ "Common complaint: weak cabin heat in winter and poor fuel economy.","Sensors & Cooling");
+E("P0217","Engine Coolant Over Temperature Condition","The engine is overheating.",3,2,
+ ["Low coolant / leak","Thermostat stuck closed","Cooling fan not working","Failed water pump","Clogged radiator","Head gasket failure"],
+ ["STOP driving and let the engine cool. Never open a hot radiator cap","Check the coolant level when cold","Check that the fans turn on when hot / with A/C on","Look for leaks and a wet water pump weep hole","Combustion leak (block) test if coolant keeps disappearing"],
+ ["Coolant","Thermostat","Water pump","Radiator","Fan relay/motor"],
+ "Driving while overheating can warp the head and blow the head gasket, turning a cheap fix into an engine replacement.","Sensors & Cooling");
+E("P0480","Cooling Fan 1 Control Circuit","Problem with the cooling fan control circuit.",2,1,
+ ["Failed fan relay","Blown fuse","Failed fan motor","Wiring/connector issue"],
+ ["Check the fan fuse and relay (swap with an identical relay)","Apply 12V directly to the fan motor to test it","Command the fan on with a scan tool"],
+ ["Fan relay","Fuse","Fan motor"],"Watch the temperature gauge, especially in traffic.","Sensors & Cooling");
+E("P0120","Throttle Position Sensor 'A' Circuit","Problem with the throttle position sensor circuit.",2,2,
+ ["Failed TPS","Wiring/connector issue"],
+ ["Inspect the connector","Watch the TPS reading sweep smoothly from closed to wide open (no dropouts)"],["Throttle position sensor"],null,"Sensors & Cooling");
+E("P0121","Throttle Position Sensor 'A' Range/Performance","The TPS reading doesn't match what's expected.",2,2,
+ ["Worn TPS (dead spot)","Dirty throttle body","Wiring"],
+ ["Sweep test the TPS for dropouts","Clean the throttle body"],["Throttle position sensor"],null,"Sensors & Cooling");
+E("P0122","Throttle Position Sensor 'A' Circuit Low","The TPS signal is too low.",2,2,
+ ["Failed TPS","Open 5V reference or signal wire","Connector problem"],
+ ["Check the 5V reference and ground","Inspect the connector"],["Throttle position sensor / throttle body"],null,"Sensors & Cooling");
+E("P0123","Throttle Position Sensor 'A' Circuit High","The TPS signal is too high.",2,2,
+ ["Failed TPS","Signal shorted to voltage","Open ground"],
+ ["Check the ground circuit","Inspect the wiring"],["Throttle position sensor / throttle body"],null,"Sensors & Cooling");
+E("P2135","Throttle/Pedal Position Sensor A/B Voltage Correlation","The two throttle position signals don't agree.",3,2,
+ ["Failing electronic throttle body","Corroded connector","Wiring damage"],
+ ["Inspect and clean the throttle body connector","Compare TPS 1 and 2 readings while moving the throttle","Wiggle test the harness"],
+ ["Electronic throttle body"],
+ "Usually puts the car in limp mode (very low power). Have it checked soon.","Sensors & Cooling");
+E("P2138","Throttle/Pedal Position Sensor D/E Voltage Correlation","The two accelerator pedal signals don't agree.",3,2,
+ ["Failing accelerator pedal sensor","Wiring/connector issue"],
+ ["Compare pedal sensor 1 and 2 readings while pressing the pedal","Inspect the pedal connector"],
+ ["Accelerator pedal assembly"],"Usually causes limp mode.","Sensors & Cooling");
+E("P0460","Fuel Level Sensor 'A' Circuit","Problem with the fuel gauge sender circuit.",1,2,
+ ["Worn fuel level sender (in the tank)","Wiring/connector","Instrument cluster issue"],
+ ["Watch the fuel gauge for erratic readings","Check the sender resistance at the pump connector"],
+ ["Fuel level sender / pump assembly"],"Keep track of mileage between fill-ups until fixed.","Sensors & Cooling");
+E("P0500","Vehicle Speed Sensor 'A'","The computer isn't getting a good vehicle speed signal.",2,2,
+ ["Failed vehicle speed sensor","Wiring/connector","Faulty ABS wheel speed sensor (on vehicles that use ABS for speed)"],
+ ["Check whether the speedometer works","Check for ABS codes","Inspect the sensor and wiring at the transmission"],
+ ["Vehicle speed sensor"],"Can cause erratic shifting and a dead speedometer or cruise control.","Sensors & Cooling");
+E("P0520","Engine Oil Pressure Sensor/Switch Circuit","Problem with the oil pressure sensor circuit.",3,1,
+ ["Failed oil pressure sensor/switch (often leaking oil)","Wiring/connector","LOW OIL PRESSURE: must be ruled out"],
+ ["Check the oil level immediately","Verify actual oil pressure with a mechanical gauge","Then inspect the sensor and connector"],
+ ["Oil pressure sensor"],"Never assume it's just the sensor until real oil pressure is confirmed with a gauge.","Sensors & Cooling");
+E("P0521","Engine Oil Pressure Sensor/Switch Range/Performance","The oil pressure reading doesn't match what's expected.",3,2,
+ ["Low oil level","Wrong oil viscosity","Failing sensor","Worn oil pump or engine bearings","Clogged oil pickup"],
+ ["Check the oil level and grade","Mechanical oil pressure test, hot and cold","Replace the sensor only after real pressure tests good"],
+ ["Engine oil","Oil pressure sensor"],"Low oil pressure destroys engines fast. Confirm before driving.","Sensors & Cooling");
+E("P0530","A/C Refrigerant Pressure Sensor 'A' Circuit","Problem with the A/C pressure sensor circuit.",1,2,
+ ["Failed A/C pressure sensor","Wiring","Very low refrigerant"],
+ ["Inspect the connector","Check the sensor's 5V reference","Check pressures with gauges"],
+ ["A/C pressure sensor"],"Refrigerant handling requires certification in many countries (e.g. EPA Section 609 in the US).","Sensors & Cooling");
+E("P0562","System Voltage Low","The computer sees low battery/charging voltage.",2,1,
+ ["Weak or failing battery","Failing alternator","Loose or corroded battery terminals","Bad ground straps","Loose alternator belt"],
+ ["Battery test (load or conductance)","Check charging voltage at idle: about 13.5–14.7 V is typical","Clean and tighten the terminals and grounds","Inspect the belt"],
+ ["Battery","Alternator","Battery terminals","Ground strap"],
+ "Low voltage can set lots of random codes in other modules. Fix this first.","Electrical");
+E("P0563","System Voltage High","The computer sees charging voltage that's too high.",2,2,
+ ["Faulty voltage regulator / alternator","Poor sensing wire connection"],
+ ["Measure charging voltage: well above about 15 V is overcharging","Check the alternator connector and sense wire"],
+ ["Alternator / voltage regulator"],"Overcharging can damage the battery and electronics.","Electrical");
+E("P0571","Brake Switch 'A' Circuit","Problem with the brake pedal switch signal.",2,1,
+ ["Faulty or misadjusted brake light switch","Blown fuse","Wiring"],
+ ["Check that the brake lights work","Check the switch adjustment at the pedal","Watch the brake switch status on a scan tool"],
+ ["Brake light switch"],"Cruise control often won't work, and some cars won't shift out of Park.","Electrical");
+E("P0230","Fuel Pump Primary Circuit","Problem with the fuel pump relay/control circuit.",3,2,
+ ["Failed fuel pump relay","Blown fuse","Wiring/connector","Fuel pump control module"],
+ ["Check the fuel pump fuse and relay","Listen for the pump priming with key on","Check voltage at the pump connector"],
+ ["Fuel pump relay","Fuse","Fuel pump"],"May cause stalling or a no-start.","Electrical");
+E("P0600","Serial Communication Link","The engine computer has a communication fault.",2,3,
+ ["Wiring/network fault","Low voltage","Engine computer fault"],
+ ["Check battery voltage and grounds","Scan all modules for network codes","Check for software updates"],["(diagnose first)"],null,"Electrical");
+E("P0601","Internal Control Module Memory Check Sum Error","The engine computer's memory failed its self-check.",3,3,
+ ["Corrupted software","Failed engine computer"],
+ ["Check for software updates/reflash","Verify battery voltage was stable (interrupted programming)"],["ECM reflash / ECM"],null,"Electrical");
+E("P0606","Control Module Processor","The engine computer detected an internal processor fault.",3,3,
+ ["Low voltage or bad grounds","Software issue","Failed engine computer"],
+ ["Check battery, charging voltage and ECM grounds FIRST","Check for software updates","Replace/program the ECM only after power and grounds check out"],["ECM"],null,"Electrical");
+
+/* ---- Transmission ---- */
+E("P0700","Transmission Control System (MIL Request)","The transmission computer has its own fault code stored.",2,2,
+ ["This is a flag. The real code is stored in the transmission computer"],
+ ["Scan the transmission control module (TCM) for its specific codes","Check the transmission fluid level and condition"],
+ ["(depends on the TCM code)"],"A basic code reader may only show P0700. You need a scanner that reads the TCM.","Transmission");
+E("P0705","Transmission Range Sensor 'A' Circuit (PRNDL Input)","The computer can't tell which gear the selector is in.",2,2,
+ ["Misadjusted or failed range sensor (neutral safety switch)","Wiring/connector","Shift cable adjustment"],
+ ["Check whether the car starts in Park and Neutral only","Check the gear display and reverse lights","Watch the range sensor on a scan tool while shifting"],
+ ["Transmission range sensor"],null,"Transmission");
+E("P0715","Input/Turbine Speed Sensor 'A' Circuit","No good signal from the transmission input speed sensor.",2,2,
+ ["Failed input speed sensor","Wiring/connector","Metal debris on the sensor"],
+ ["Inspect the connector","Check the sensor signal on a scan tool","Check the fluid for metal"],
+ ["Input speed sensor"],"Often causes harsh shifting or limp mode.","Transmission");
+E("P0720","Output Speed Sensor Circuit","No good signal from the transmission output speed sensor.",2,2,
+ ["Failed output speed sensor","Wiring/connector"],
+ ["Check the speedometer","Inspect the sensor and wiring"],["Output speed sensor"],null,"Transmission");
+E("P0730","Incorrect Gear Ratio","The transmission isn't in the gear it was told to be in. It's slipping.",3,3,
+ ["Low or burnt transmission fluid","Worn clutches/bands","Faulty shift solenoid","Valve body problem","Speed sensor fault"],
+ ["Check the fluid level and condition (burnt smell, dark, debris)","Check for other transmission codes","Road test for slipping/flare"],
+ ["Transmission fluid & filter","Shift solenoids"],"Slipping gets worse fast. Avoid heavy loads and towing.","Transmission");
+E("P0740","Torque Converter Clutch Solenoid Circuit/Open","Electrical problem with the torque converter lock-up solenoid.",2,3,
+ ["Failed TCC solenoid","Wiring/internal harness","TCM fault"],
+ ["Check the solenoid resistance at the transmission connector","Inspect the connector"],["TCC solenoid"],null,"Transmission");
+E("P0741","Torque Converter Clutch Circuit Performance/Stuck Off","The torque converter isn't locking up properly.",2,3,
+ ["Worn/old fluid","Faulty TCC solenoid","Worn torque converter clutch","Valve body"],
+ ["Check fluid condition","Watch TCC slip RPM on a scan tool at cruise"],["Transmission fluid","TCC solenoid","Torque converter"],
+ "Symptoms: higher RPM at highway speed, worse fuel economy.","Transmission");
+E("P0750","Shift Solenoid 'A'","Problem with shift solenoid A.",2,3,
+ ["Failed solenoid","Wiring/internal harness","Dirty fluid"],
+ ["Check fluid level and condition","Measure solenoid resistance","Command the solenoid with a scan tool"],["Shift solenoid"],null,"Transmission");
+E("P0755","Shift Solenoid 'B'","Problem with shift solenoid B.",2,3,
+ ["Failed solenoid","Wiring","Dirty fluid"],
+ ["Check the fluid","Test the solenoid"],["Shift solenoid"],null,"Transmission");
+E("P0841","Transmission Fluid Pressure Sensor/Switch 'A' Circuit Range/Performance","The transmission fluid pressure switch reading doesn't make sense.",2,3,
+ ["Low fluid","Faulty pressure switch","Valve body issue"],
+ ["Check the fluid level (correct procedure for that transmission)","Test the pressure switch"],["Pressure switch / manifold"],null,"Transmission");
+E("P0218","Transmission Fluid Over Temperature Condition","The transmission is overheating.",3,2,
+ ["Towing/heavy load","Low or old fluid","Blocked transmission cooler","Slipping torque converter"],
+ ["Stop and let it cool","Check fluid level and condition","Inspect the cooler and lines"],
+ ["Transmission fluid","Auxiliary cooler"],"Heat is the #1 killer of automatic transmissions.","Transmission");
+
+/* ---- Network, ABS ---- */
+[["U0100","Lost Communication With ECM/PCM 'A'","engine computer"],["U0101","Lost Communication With TCM","transmission computer"],["U0121","Lost Communication With ABS Control Module","ABS module"],["U0140","Lost Communication With Body Control Module","body control module"]].forEach(([c,t,m])=>{
+ E(c,t,`Other modules can't talk to the ${m}.`,c==="U0100"?3:2,3,
+ ["Low battery voltage / poor grounds",`${m} lost power (fuse, relay)`,"Damaged or corroded network (CAN) wiring or connector","Water damage to the module",`Failed ${m}`],
+ ["Check battery voltage and grounds first",`Check the fuses that power the ${m}`,"Measure CAN bus resistance at the diagnostic port (about 60 Ω with key off on many vehicles)","Inspect connectors for water and corrosion"],
+ ["(diagnose first)"],"Network codes often show up after a weak battery or jump start. Fix voltage problems and re-scan.","Network & ABS");
+});
+E("U0073","Control Module Communication Bus 'A' Off","The main communication network is down.",3,3,
+ ["Shorted CAN wiring","A failed module dragging the network down","Low voltage"],
+ ["Check battery voltage","Measure CAN resistance","Unplug modules one at a time to find the one pulling the bus down"],["(diagnose first)"],null,"Network & ABS");
+[["C0035","Left Front"],["C0040","Right Front"],["C0045","Left Rear"],["C0050","Right Rear"]].forEach(([c,w])=>{
+ E(c,`${w} Wheel Speed Sensor Circuit`,`The ABS system isn't getting a good signal from the ${w.toLowerCase()} wheel.`,2,1,
+ ["Failed wheel speed sensor","Damaged wiring near the wheel (very common)","Dirty, cracked or rusted tone ring","Worn wheel bearing (sensor built into hub on many cars)"],
+ ["Inspect the wiring along the suspension for damage","Compare wheel speeds on a scan tool while driving","Check the tone ring for damage or rust buildup","Check for wheel bearing play or noise"],
+ ["Wheel speed sensor","Wheel hub/bearing","Sensor pigtail"],
+ "Normal brakes still work, but ABS and traction control are usually turned off. Codes in the C0035–C0050 range follow the generic standard. Confirm on the brand you're working on.","Network & ABS");
+});
+
+/* ---------- DECODER for codes not in DB ---------- */
+const SYS={P:"Powertrain (engine & transmission)",B:"Body (airbags, seats, lights, comfort)",C:"Chassis (ABS, brakes, steering, suspension)",U:"Network (communication between computers)"};
+const PSUB={"0":"Fuel/air metering and auxiliary emissions","1":"Fuel and air metering","2":"Fuel and air metering (injector circuits)","3":"Ignition system or misfire","4":"Auxiliary emission controls (EGR, EVAP, catalyst, air injection)","5":"Vehicle speed, idle control and auxiliary inputs","6":"Computer and output circuits","7":"Transmission","8":"Transmission","9":"Transmission","A":"Hybrid propulsion","B":"Hybrid propulsion","C":"Hybrid propulsion"};
+function decode(c){
+ const s=c[0],d1=c[1],d2=c[2];
+ let type;
+ if(d1==="0") type="Generic (SAE standard): same meaning on all makes";
+ else if(d1==="1") type="Manufacturer-specific: meaning depends on the brand";
+ else if(d1==="2") type=s==="P"?"Generic (SAE standard)":"Manufacturer-specific";
+ else type=s==="P"?"Mixed: P3000–P33FF manufacturer-specific, P3400+ generic":"Generic (SAE standard)";
+ let rows=[[s,SYS[s]],[d1,type]];
+ if(s==="P"&&PSUB[d2]) rows.push([d2,PSUB[d2]]);
+ rows.push([c.slice(3),"Specific fault number within that system"]);
+ return rows;
+}
+
+/* ---------- UI ---------- */
+const out=document.getElementById("out"), q=document.getElementById("q");
+const CODE_RE=/^[PBCU][0-3][0-9A-F]{3}$/;
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+function card(e){
+ return `<div class="card"><div class="card-h">
+  <div class="code">${e.code}</div><div class="title">${esc(e.title)}</div>
+  <div class="plain">${esc(e.plain)}</div>
+  <div class="badges"><span class="badge s${e.sev}">● ${SEV[e.sev]}</span><span class="badge d">🔧 ${DIFF[e.diff]}</span><span class="badge d">${esc(e.cat)}</span></div>
+ </div><div class="card-b">
+  <div class="sec"><h3>Most likely causes</h3><ol>${e.causes.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>
+  <div class="sec"><h3>What to check first</h3><ol>${e.checks.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>
+  <div class="sec"><h3>Parts you may need</h3><div class="parts">${e.parts.map(x=>`<span class="part">${esc(x)}</span>`).join("")}</div></div>
+  ${e.note?`<div class="note">${esc(e.note)}</div>`:""}
+ </div></div>`;
+}
+function unknown(c){
+ const rows=decode(c);
+ const manu=c[1]==="1"||(c[0]!=="P"&&c[1]==="2")||(c[0]==="P"&&c[1]==="3"&&parseInt(c.slice(2),16)<0x400);
+ const srs=c[0]==="B"&&c[1]==="0"&&c[2]==="0";
+ return `<div class="card"><div class="card-h"><div class="code">${c}</div>
+  <div class="title">Not in the quick-fix library yet. Here's how to read it.</div>
+  <div class="plain">Every code is built the same way. This is what each part of ${c} tells you:</div></div>
+  <div class="card-b"><div class="sec"><table class="decode">${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join("")}</table></div>
+  ${manu?`<div class="note">This is a manufacturer-specific code. Look it up for the exact make, model and year (factory service manual or the brand's repair info) because the same number can mean different things on different brands.</div>`:""}
+  ${srs?`<div class="note">B00xx codes usually relate to the airbag (SRS) system. Don't probe airbag circuits with a test light or multimeter. Leave this to a trained technician.</div>`:""}
+ </div></div>`;
+}
+const PRIORITY=["Network & ABS","Electrical","Sensors & Cooling","Fuel & Air","Ignition & Timing","Misfire","Transmission","EVAP & Emissions","O2 & Catalyst"];
+function multiTip(codes){
+ const known=codes.filter(c=>DB[c]);
+ if(known.length<2) return "";
+ const sorted=[...known].sort((a,b)=>PRIORITY.indexOf(DB[a].cat)-PRIORITY.indexOf(DB[b].cat));
+ return `<div class="multi"><b>Suggested fix order:</b> ${sorted.join(" → ")}<br>
+ Fix power, sensor and fuel/air problems before misfires, and misfires before catalyst or O2 codes. Downstream codes are often caused by the earlier ones. After each repair, clear the codes and re-check.</div>`;
+}
+function remember(c){
+ try{let r=JSON.parse(localStorage.getItem("cc_recent")||"[]");r=[c,...r.filter(x=>x!==c)].slice(0,6);localStorage.setItem("cc_recent",JSON.stringify(r));}catch(e){}
+ drawRecent();
+}
+function drawRecent(){
+ let r=[];try{r=JSON.parse(localStorage.getItem("cc_recent")||"[]")}catch(e){}
+ const el=document.getElementById("recent");
+ el.innerHTML=r.length?`Recent: ${r.map(c=>`<button data-c="${esc(c)}">${esc(c)}</button>`).join("")}`:"";
+}
+function listView(title,codes){
+ if(!codes.length) return `<div class="card"><div class="empty">No matches. Try a code like P0301, or a word like "lean", "coil", "EVAP" or "transmission".</div></div>`;
+ return `<div class="card list"><div class="list-h">${esc(title)} · ${codes.length}</div>${codes.map(c=>`<div class="item" data-c="${c}"><span class="c">${c}</span><span class="t">${esc(DB[c].title)}</span></div>`).join("")}</div>`;
+}
+function run(raw){
+ raw=raw.trim();
+ document.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));
+ if(!raw){out.innerHTML="";return;}
+ const parts=raw.toUpperCase().split(/[\s,;]+/).filter(Boolean);
+ if(parts.every(p=>CODE_RE.test(p))){
+  const rank=c=>DB[c]?PRIORITY.indexOf(DB[c].cat):99;
+  const ordered=[...new Set(parts)].sort((a,b)=>rank(a)-rank(b));
+  out.innerHTML=multiTip(ordered)+ordered.map(c=>DB[c]?card(DB[c]):unknown(c)).join("");
+  parts.forEach(remember);
+  return;
+ }
+ if(parts.length===1 && /^[PBCU]?[0-9A-F]{1,4}$/.test(parts[0]) && /\d/.test(parts[0])){
+  const p=parts[0];
+  const m=Object.keys(DB).filter(c=>c.startsWith(p)||c.slice(1).startsWith(p)).sort();
+  out.innerHTML=listView(`Codes starting with "${p}"`,m);return;
+ }
+ const words=raw.toLowerCase().split(/\s+/);
+ const m=Object.values(DB).filter(e=>{
+  const hay=(e.code+" "+e.title+" "+e.plain+" "+e.cat+" "+e.causes.join(" ")+" "+e.parts.join(" ")).toLowerCase();
+  return words.every(w=>hay.includes(w));
+ }).map(e=>e.code).sort();
+ out.innerHTML=listView(`Results for "${raw}"`,m);
+}
+document.getElementById("f").addEventListener("submit",e=>{e.preventDefault();run(q.value)});
+document.addEventListener("click",e=>{
+ const t=e.target.closest("[data-c]");
+ if(t){q.value=t.dataset.c;run(t.dataset.c);window.scrollTo({top:0,behavior:"smooth"});}
+});
+const chips=document.getElementById("chips");
+Object.keys(CAT).sort((a,b)=>PRIORITY.indexOf(a)-PRIORITY.indexOf(b)).forEach(c=>{
+ const b=document.createElement("button");b.className="chip";b.textContent=`${c} (${CAT[c].length})`;
+ b.onclick=()=>{q.value="";out.innerHTML=listView(c,[...CAT[c]].sort());document.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));b.classList.add("on");};
+ chips.appendChild(b);
+});
+drawRecent();
+</script>
+</body>
+</html>

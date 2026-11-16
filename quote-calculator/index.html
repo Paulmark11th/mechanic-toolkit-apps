@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuotePro – Mechanic Quote Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1114;--panel:#171a1f;--panel2:#1e2228;--line:#2a2f37;--text:#e8eaed;--muted:#9aa1ab;--accent:#ff7a1a;--accent2:#ffb27a;--ok:#3ecf8e}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.45}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.logo{width:44px;height:44px;border-radius:10px;background:var(--accent);display:grid;place-items:center;flex:none}
+h1{font-family:"Barlow Condensed",sans-serif;font-size:28px;letter-spacing:.5px;margin:0;line-height:1}
+.sub{color:var(--muted);font-size:13px}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--text);padding:9px 16px;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit;font-size:14px}
+.tab.on{background:var(--accent);color:#111;border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:1fr 340px;gap:14px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.panel h2{font-family:"Barlow Condensed",sans-serif;font-size:18px;letter-spacing:.6px;text-transform:uppercase;color:var(--accent2);margin:0 0 12px}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:14px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.addrow{display:flex;gap:8px;margin-top:4px}
+.addrow select{flex:1}
+.btn{background:var(--accent);color:#111;border:0;border-radius:8px;padding:9px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px;white-space:nowrap}
+.btn:hover{background:var(--accent2)}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--accent)}
+.jobs{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.job{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.job-top{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.job-top input{font-weight:600}
+.x{background:none;border:0;color:var(--muted);font-size:20px;cursor:pointer;padding:0 6px}
+.x:hover{color:#ff5a5a}
+.job .fields{grid-template-columns:repeat(3,1fr)}
+.job-total{text-align:right;font-size:13px;color:var(--muted);margin-top:6px}
+.job-total b{color:var(--text)}
+.tip{font-size:12px;color:var(--muted);margin-top:6px}
+.empty{color:var(--muted);text-align:center;padding:20px;border:1px dashed var(--line);border-radius:10px}
+.sum{position:sticky;top:12px}
+.line{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.line.big{font-size:22px;font-weight:700;border-top:1px solid var(--line);margin-top:6px;padding-top:12px}
+.line.big span:last-child{color:var(--accent)}
+.profit{margin-top:14px;background:rgba(62,207,142,.08);border:1px solid rgba(62,207,142,.25);border-radius:10px;padding:12px}
+.profit h3{margin:0 0 6px;font-size:13px;color:var(--ok);text-transform:uppercase;letter-spacing:.5px}
+.profit .line{font-size:13px;padding:3px 0}
+.actions{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.toast{font-size:12.5px;color:var(--ok);min-height:18px;text-align:center}
+.hidden{display:none!important}
+/* Quote doc */
+.doc{background:#fff;color:#1a1a1a;border-radius:12px;padding:32px;max-width:760px;margin:0 auto;font-size:14px}
+.doc-h{display:flex;justify-content:space-between;gap:20px;border-bottom:3px solid #ff7a1a;padding-bottom:14px;margin-bottom:16px;flex-wrap:wrap}
+.doc-h h2{margin:0;font-family:"Barlow Condensed",sans-serif;font-size:30px;letter-spacing:.5px}
+.doc .muted{color:#666;font-size:13px}
+.doc .meta{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.doc table{width:100%;border-collapse:collapse}
+.doc th{text-align:left;font-size:12px;text-transform:uppercase;color:#666;border-bottom:1px solid #ddd;padding:8px 6px}
+.doc td{padding:9px 6px;border-bottom:1px solid #eee;vertical-align:top}
+.doc td.r,.doc th.r{text-align:right}
+.doc .tot{margin-left:auto;width:280px;margin-top:12px}
+.doc .tot .line{color:#1a1a1a}
+.doc .tot .line.big span:last-child{color:#ff7a1a}
+.doc .terms{margin-top:22px;font-size:12px;color:#555;border-top:1px solid #eee;padding-top:12px;white-space:pre-wrap}
+.doc-actions{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap}
+@media print{
+ body{background:#fff}.no-print{display:none!important}.wrap{padding:0;max-width:none}.doc{border-radius:0;padding:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="no-print">
+  <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h8"/></svg></div>
+  <div><h1>QUOTEPRO</h1><div class="sub">Price any repair job like a pro, in 30 seconds</div></div>
+ </header>
+
+ <div class="tabs no-print">
+  <button class="tab on" data-t="build">1 · Build quote</button>
+  <button class="tab" data-t="settings">⚙ My rates</button>
+  <button class="tab" data-t="preview">2 · Customer quote</button>
+ </div>
+
+ <!-- SETTINGS -->
+ <section id="t-settings" class="hidden no-print">
+  <div class="panel">
+   <h2>My business &amp; rates</h2>
+   <p class="tip" style="margin-top:-6px">Saved on this device. Set them once and every quote uses them.</p>
+   <div class="fields">
+    <div><label>Business name</label><input id="s_name" placeholder="Mike's Mobile Mechanic"></div>
+    <div><label>Phone</label><input id="s_phone" placeholder="(555) 123-4567"></div>
+    <div><label>Email / WhatsApp</label><input id="s_email"></div>
+    <div><label>Currency symbol</label><input id="s_cur" value="$"></div>
+    <div><label>Hourly labour rate</label><input id="s_rate" type="number" min="0" step="1" value="80"></div>
+    <div><label>Parts markup %</label><input id="s_markup" type="number" min="0" step="1" value="30"></div>
+    <div><label>Shop supplies % of labour</label><input id="s_supplies" type="number" min="0" step="0.5" value="5"></div>
+    <div><label>Tax %</label><input id="s_tax" type="number" min="0" step="0.1" value="0"></div>
+    <div><label>Minimum labour charge (hrs)</label><input id="s_minhrs" type="number" min="0" step="0.1" value="0.5"></div>
+    <div><label>Tax applies to</label><select id="s_taxon"><option value="all">Labour + parts</option><option value="parts">Parts only</option><option value="none">Nothing</option></select></div>
+   </div>
+   <div style="margin-top:10px"><label>Terms printed on every quote</label>
+   <textarea id="s_terms" rows="3">Quote valid for 14 days. Prices may change if additional problems are found during the repair. Customer will be contacted for approval before any extra work. Parts warranty per manufacturer; labour warranted for 90 days.</textarea></div>
+  </div>
+ </section>
+
+ <!-- BUILD -->
+ <section id="t-build" class="no-print">
+  <div class="grid">
+   <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="panel">
+     <h2>Customer &amp; vehicle</h2>
+     <div class="fields">
+      <div><label>Customer name</label><input id="c_name"></div>
+      <div><label>Customer phone</label><input id="c_phone"></div>
+      <div><label>Year</label><input id="v_year" inputmode="numeric" placeholder="2015"></div>
+      <div><label>Make</label><input id="v_make" placeholder="Toyota"></div>
+      <div><label>Model</label><input id="v_model" placeholder="Camry 2.5L"></div>
+      <div><label>Mileage</label><input id="v_miles" inputmode="numeric"></div>
+     </div>
+    </div>
+
+    <div class="panel">
+     <h2>Jobs</h2>
+     <div class="addrow">
+      <select id="preset"></select>
+      <button class="btn" id="add">+ Add job</button>
+     </div>
+     <div class="tip">Labour hours are typical starting points and vary a lot by vehicle and engine. Always check the real labour time for the exact car, then edit the hours and parts cost below.</div>
+     <div class="jobs" id="jobs"></div>
+    </div>
+
+    <div class="panel">
+     <h2>Extras</h2>
+     <div class="fields">
+      <div><label>Trip / call-out fee</label><input id="x_trip" type="number" min="0" step="1" value="0"></div>
+      <div><label>Disposal / environmental fee</label><input id="x_disp" type="number" min="0" step="1" value="0"></div>
+      <div><label>Discount</label><input id="x_disc" type="number" min="0" step="1" value="0"></div>
+      <div><label>Discount type</label><select id="x_disctype"><option value="amt">Amount</option><option value="pct">Percent</option></select></div>
+     </div>
+     <div style="margin-top:10px"><label>Notes for the customer</label><textarea id="x_notes" rows="2" placeholder="e.g. Rear brakes at 3mm. Recommend replacing within 3 months."></textarea></div>
+    </div>
+   </div>
+
+   <div>
+    <div class="panel sum">
+     <h2>Quote total</h2>
+     <div id="sum"></div>
+     <div class="profit"><h3>Your earnings (not shown to customer)</h3><div id="profit"></div></div>
+     <div class="actions">
+      <button class="btn" data-go="preview">View customer quote →</button>
+      <button class="btn ghost" id="copy1">Copy quote as text (for SMS/WhatsApp)</button>
+      <button class="btn ghost" id="reset">Start a new quote</button>
+      <div class="toast" id="toast1"></div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- PREVIEW -->
+ <section id="t-preview" class="hidden">
+  <div class="doc-actions no-print">
+   <button class="btn ghost" data-go="build">← Edit</button>
+   <button class="btn" id="print">Print / Save as PDF</button>
+   <button class="btn ghost" id="copy2">Copy as text</button>
+  </div>
+  <div class="toast no-print" id="toast2"></div>
+  <div class="doc" id="doc"></div>
+ </section>
+</div>
+
+<script>
+/* Presets: [name, typical labour hrs, typical parts cost (USD baseline), note] */
+const PRESETS=[
+ ["Maintenance",[
+  ["Oil & filter change",0.5,40],["Engine air filter",0.2,20],["Cabin air filter",0.3,20],["Tyre rotation",0.4,0],
+  ["Coolant flush",1.0,40],["Brake fluid flush",1.0,20],["Transmission fluid drain & fill",0.8,60],
+  ["Spark plugs (4-cyl)",1.0,40],["Spark plugs (V6)",2.0,60,"Some V6s need the intake removed for the rear plugs. Check the labour guide."],
+  ["Serpentine belt",0.6,40],["Wiper blades",0.1,30],["Headlight bulb",0.3,25]]],
+ ["Brakes",[
+  ["Front brake pads",1.2,60],["Front pads & rotors",1.8,180],["Rear pads & rotors",1.8,180],["Rear brake shoes (drum)",1.6,70],["Brake caliper (one)",1.0,80]]],
+ ["Electrical",[
+  ["Battery replacement",0.4,180,"Some cars need a battery registration/reset after replacement."],["Alternator",1.8,250],["Starter motor",1.8,200],["Diagnostic: check engine light",1.0,0],["Diagnostic: electrical fault",1.5,0]]],
+ ["Engine & cooling",[
+  ["Ignition coil (one)",0.5,60],["Thermostat",1.2,40],["Water pump",3.0,120],["Radiator",2.0,200],["O2 sensor",0.6,70],
+  ["MAF sensor",0.3,120],["Valve cover gasket (4-cyl)",1.2,40],["Timing belt kit (4-cyl)",4.0,250,"Usually done with the water pump on many engines. Quote both."],["Fuel pump",2.5,250],["Throttle body clean",0.5,10]]],
+ ["Suspension & steering",[
+  ["Front struts (pair)",2.5,250,"Recommend a wheel alignment afterwards."],["Sway bar links (pair)",0.8,50],["Outer tie rod end (one)",0.8,40,"Alignment required afterwards."],["CV axle (one)",1.5,100],["Front wheel bearing/hub (one)",1.5,120]]],
+ ["A/C",[
+  ["A/C recharge",0.8,50,"In many countries refrigerant handling requires certification (e.g. EPA Section 609 in the US)."],["A/C diagnosis",1.0,0]]],
+];
+const $=id=>document.getElementById(id);
+const S_KEYS=["name","phone","email","cur","rate","markup","supplies","tax","minhrs","taxon","terms"];
+let jobs=[];let qn=Date.now().toString().slice(-6);
+
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function S(){const o={};S_KEYS.forEach(k=>o[k]=$("s_"+k).value);["rate","markup","supplies","tax","minhrs"].forEach(k=>o[k]=parseFloat(o[k])||0);return o}
+function num(v){const n=parseFloat(v);return isFinite(n)?n:0}
+function money(n){const s=S();return (n<0?"−":"")+s.cur+(Math.round(Math.abs(n)*100)/100).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function esc(s){return String(s??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+
+/* presets dropdown */
+(function(){
+ const sel=$("preset");let h=`<option value="">Choose a job…</option><option value="custom">✎ Custom job</option>`;
+ PRESETS.forEach(([g,list],gi)=>{h+=`<optgroup label="${g}">`+list.map((j,ji)=>`<option value="${gi}-${ji}">${j[0]} (~${j[1]} hr)</option>`).join("")+`</optgroup>`});
+ sel.innerHTML=h;
+})();
+
+function addJob(){
+ const v=$("preset").value;if(!v)return;
+ if(v==="custom") jobs.push({name:"",hrs:1,parts:0,qty:1,note:""});
+ else{const [g,j]=v.split("-").map(Number);const p=PRESETS[g][1][j];jobs.push({name:p[0],hrs:p[1],parts:p[2],qty:1,note:p[3]||""});}
+ $("preset").value="";drawJobs();calc();
+}
+function drawJobs(){
+ const el=$("jobs");
+ if(!jobs.length){el.innerHTML=`<div class="empty">No jobs yet. Pick one above and tap "Add job".</div>`;return}
+ el.innerHTML=jobs.map((j,i)=>`<div class="job">
+  <div class="job-top"><input data-i="${i}" data-k="name" value="${esc(j.name)}" placeholder="Job description"><button class="x" data-del="${i}" title="Remove">×</button></div>
+  <div class="fields">
+   <div><label>Labour hours</label><input type="number" min="0" step="0.1" data-i="${i}" data-k="hrs" value="${j.hrs}"></div>
+   <div><label>Parts cost (your cost)</label><input type="number" min="0" step="1" data-i="${i}" data-k="parts" value="${j.parts}"></div>
+   <div><label>Quantity</label><input type="number" min="1" step="1" data-i="${i}" data-k="qty" value="${j.qty}"></div>
+  </div>
+  ${j.note?`<div class="tip">💡 ${esc(j.note)}</div>`:""}
+  <div class="job-total" id="jt${i}"></div>
+ </div>`).join("");
+}
+function compute(){
+ const s=S();
+ const lines=jobs.map(j=>{
+  const qty=Math.max(1,Math.round(num(j.qty)));
+  const hrs=Math.max(num(j.hrs)*qty, jobs.length?0:0);
+  const labour=hrs*s.rate;
+  const partsCost=num(j.parts)*qty;
+  const partsPrice=partsCost*(1+s.markup/100);
+  return {name:j.name||"Custom job",qty,hrs,labour,partsCost,partsPrice,total:labour+partsPrice};
+ });
+ let totalHrs=lines.reduce((a,l)=>a+l.hrs,0);
+ let labour=lines.reduce((a,l)=>a+l.labour,0);
+ let minAdj=0;
+ if(lines.length&&totalHrs<s.minhrs){minAdj=(s.minhrs-totalHrs)*s.rate;labour+=minAdj}
+ const partsPrice=lines.reduce((a,l)=>a+l.partsPrice,0);
+ const partsCost=lines.reduce((a,l)=>a+l.partsCost,0);
+ const supplies=labour*s.supplies/100;
+ const trip=num($("x_trip").value),disp=num($("x_disp").value);
+ const sub=labour+partsPrice+supplies+trip+disp;
+ const dv=num($("x_disc").value);
+ let disc=$("x_disctype").value==="pct"?sub*Math.min(dv,100)/100:Math.min(dv,sub);
+ const afterDisc=sub-disc;
+ let taxable=0;
+ if(s.taxon==="all")taxable=afterDisc;
+ else if(s.taxon==="parts")taxable=sub>0?partsPrice*(afterDisc/sub):0;
+ const tax=taxable*s.tax/100;
+ const total=afterDisc+tax;
+ const profit=labour+(partsPrice-partsCost)+supplies+trip+disp-disc;
+ return {s,lines,totalHrs,labour,minAdj,partsPrice,partsCost,supplies,trip,disp,sub,disc,tax,total,profit};
+}
+function calc(){
+ const r=compute();
+ r.lines.forEach((l,i)=>{const el=$("jt"+i);if(el)el.innerHTML=`Labour ${money(l.labour)} + Parts ${money(l.partsPrice)} = <b>${money(l.total)}</b>`});
+ const L=(a,b,cls="")=>`<div class="line ${cls}"><span>${a}</span><span>${b}</span></div>`;
+ $("sum").innerHTML=
+  L(`Labour (${r.totalHrs.toFixed(1)} hr${r.minAdj?" + min. charge":""})`,money(r.labour))+
+  L("Parts",money(r.partsPrice))+
+  (r.supplies?L("Shop supplies",money(r.supplies)):"")+
+  (r.trip?L("Trip fee",money(r.trip)):"")+
+  (r.disp?L("Disposal fee",money(r.disp)):"")+
+  (r.disc?L("Discount","−"+money(r.disc)):"")+
+  (r.tax?L(`Tax (${r.s.tax}%)`,money(r.tax)):"")+
+  L("TOTAL",money(r.total),"big");
+ const eff=r.totalHrs>0?r.profit/r.totalHrs:0;
+ $("profit").innerHTML=
+  L("Labour you earn",money(r.labour))+
+  L("Profit on parts",money(r.partsPrice-r.partsCost))+
+  L("Supplies + fees − discount",money(r.supplies+r.trip+r.disp-r.disc))+
+  `<div class="line" style="font-weight:700;border-top:1px solid rgba(62,207,142,.25);margin-top:4px;padding-top:6px"><span>You keep (before tax)</span><span>${money(r.profit)}</span></div>`+
+  (r.totalHrs?L("Effective hourly",money(eff)+"/hr"):"")+
+  `<div class="tip">Parts you buy for this job: ${money(r.partsCost)}</div>`;
+ saveDraft();
+}
+function quoteText(){
+ const r=compute(),s=r.s;
+ const v=[$("v_year").value,$("v_make").value,$("v_model").value].filter(Boolean).join(" ");
+ let t=`${s.name||"Repair Quote"}${s.phone?" · "+s.phone:""}\nQUOTE #${qn} · ${new Date().toLocaleDateString()}\n`;
+ if($("c_name").value)t+=`For: ${$("c_name").value}\n`;
+ if(v)t+=`Vehicle: ${v}${$("v_miles").value?" · "+$("v_miles").value+" mi":""}\n`;
+ t+=`\n`;
+ r.lines.forEach(l=>{t+=`• ${l.name}${l.qty>1?" ×"+l.qty:""}: ${money(l.total)}\n`});
+ if(r.minAdj)t+=`• Minimum labour charge: ${money(r.minAdj)}\n`;
+ if(r.supplies)t+=`• Shop supplies: ${money(r.supplies)}\n`;
+ if(r.trip)t+=`• Trip fee: ${money(r.trip)}\n`;
+ if(r.disp)t+=`• Disposal fee: ${money(r.disp)}\n`;
+ if(r.disc)t+=`• Discount: −${money(r.disc)}\n`;
+ if(r.tax)t+=`• Tax: ${money(r.tax)}\n`;
+ t+=`\nTOTAL: ${money(r.total)}\n`;
+ if($("x_notes").value)t+=`\nNotes: ${$("x_notes").value}\n`;
+ if(s.terms)t+=`\n${s.terms}`;
+ return t;
+}
+function drawDoc(){
+ const r=compute(),s=r.s;
+ const v=[$("v_year").value,$("v_make").value,$("v_model").value].filter(Boolean).join(" ");
+ const L=(a,b,cls="")=>`<div class="line ${cls}"><span>${a}</span><span>${b}</span></div>`;
+ $("doc").innerHTML=`
+ <div class="doc-h"><div><h2>${esc(s.name||"Repair Quote")}</h2><div class="muted">${[s.phone,s.email].filter(Boolean).map(esc).join(" · ")}</div></div>
+  <div style="text-align:right"><div style="font-weight:700;font-size:18px">QUOTE</div><div class="muted">#${qn}<br>${new Date().toLocaleDateString()}</div></div></div>
+ <div class="meta">
+  <div><div class="muted">Prepared for</div><b>${esc($("c_name").value||"—")}</b><br>${esc($("c_phone").value)}</div>
+  <div><div class="muted">Vehicle</div><b>${esc(v||"—")}</b><br>${$("v_miles").value?esc($("v_miles").value)+" miles":""}</div>
+ </div>
+ <table><thead><tr><th>Description</th><th class="r">Labour</th><th class="r">Parts</th><th class="r">Total</th></tr></thead><tbody>
+ ${r.lines.length?r.lines.map(l=>`<tr><td>${esc(l.name)}${l.qty>1?" ×"+l.qty:""}</td><td class="r">${money(l.labour)}</td><td class="r">${money(l.partsPrice)}</td><td class="r"><b>${money(l.total)}</b></td></tr>`).join(""):`<tr><td colspan="4" class="muted">No jobs added yet</td></tr>`}
+ ${r.minAdj?`<tr><td>Minimum labour charge</td><td class="r">${money(r.minAdj)}</td><td class="r">—</td><td class="r"><b>${money(r.minAdj)}</b></td></tr>`:""}
+ </tbody></table>
+ <div class="tot">
+  ${L("Subtotal",money(r.labour+r.partsPrice))}
+  ${r.supplies?L("Shop supplies",money(r.supplies)):""}
+  ${r.trip?L("Trip fee",money(r.trip)):""}
+  ${r.disp?L("Disposal fee",money(r.disp)):""}
+  ${r.disc?L("Discount","−"+money(r.disc)):""}
+  ${r.tax?L(`Tax (${s.tax}%)`,money(r.tax)):""}
+  ${L("TOTAL",money(r.total),"big")}
+ </div>
+ ${$("x_notes").value?`<div style="margin-top:16px"><div class="muted">Notes</div>${esc($("x_notes").value)}</div>`:""}
+ ${s.terms?`<div class="terms">${esc(s.terms)}</div>`:""}
+ <div style="margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:30px;font-size:12px;color:#666">
+  <div style="border-top:1px solid #999;padding-top:4px">Customer approval signature</div><div style="border-top:1px solid #999;padding-top:4px">Date</div></div>`;
+}
+function tab(t){
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+ ["build","settings","preview"].forEach(x=>$("t-"+x).classList.toggle("hidden",x!==t));
+ if(t==="preview")drawDoc();
+ window.scrollTo({top:0});
+}
+async function copy(toastId){
+ const t=quoteText();
+ try{await navigator.clipboard.writeText(t);$(toastId).textContent="Copied! Paste it into a text or WhatsApp message."}
+ catch(e){$(toastId).textContent="Couldn't copy automatically. Select the quote and copy it manually."}
+ setTimeout(()=>$(toastId).textContent="",3500);
+}
+function saveDraft(){
+ store("qp_settings",Object.fromEntries(S_KEYS.map(k=>[k,$("s_"+k).value])));
+ store("qp_draft",{jobs,qn,f:Object.fromEntries(["c_name","c_phone","v_year","v_make","v_model","v_miles","x_trip","x_disp","x_disc","x_disctype","x_notes"].map(k=>[k,$(k).value]))});
+}
+function restore(){
+ const s=load("qp_settings");if(s)S_KEYS.forEach(k=>{if(s[k]!=null)$("s_"+k).value=s[k]});
+ const d=load("qp_draft");if(d){jobs=d.jobs||[];qn=d.qn||qn;Object.entries(d.f||{}).forEach(([k,v])=>{if($(k))$(k).value=v})}
+}
+
+/* events */
+$("add").onclick=addJob;
+$("preset").addEventListener("change",()=>{if($("preset").value)addJob()});
+$("jobs").addEventListener("input",e=>{const t=e.target;if(t.dataset.i==null)return;jobs[+t.dataset.i][t.dataset.k]=t.dataset.k==="name"?t.value:t.value;calc()});
+$("jobs").addEventListener("click",e=>{const d=e.target.dataset.del;if(d!=null){jobs.splice(+d,1);drawJobs();calc()}});
+document.querySelectorAll("input,select,textarea").forEach(el=>{if(!el.closest("#jobs")&&el.id!=="preset")el.addEventListener("input",calc)});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>tab(b.dataset.t));
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>tab(b.dataset.go));
+$("copy1").onclick=()=>copy("toast1");$("copy2").onclick=()=>copy("toast2");
+$("print").onclick=()=>{try{window.print()}catch(e){}};
+let resetArmed=false;
+$("reset").onclick=()=>{
+ if(!resetArmed){resetArmed=true;$("reset").textContent="Tap again to clear this quote";setTimeout(()=>{resetArmed=false;$("reset").textContent="Start a new quote"},3000);return}
+ jobs=[];qn=Date.now().toString().slice(-6);
+ ["c_name","c_phone","v_year","v_make","v_model","v_miles","x_notes"].forEach(k=>$(k).value="");
+ ["x_trip","x_disp","x_disc"].forEach(k=>$(k).value=0);
+ resetArmed=false;$("reset").textContent="Start a new quote";drawJobs();calc();
+};
+restore();drawJobs();calc();
+</script>
+</body>
+</html>
