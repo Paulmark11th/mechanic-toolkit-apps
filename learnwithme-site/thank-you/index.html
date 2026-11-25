@@ -16,9 +16,6 @@
   var host = window.location.hostname.toLowerCase();
   if (permitidos.indexOf(host) === -1) { window.location.replace(destino); return; }
 
-  var isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  if (!isMobile) { window.location.replace("https://www.google.com/"); return; }
-
   document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
   document.addEventListener("selectstart", function (e) { e.preventDefault(); });
   document.addEventListener("dragstart", function (e) { e.preventDefault(); });
